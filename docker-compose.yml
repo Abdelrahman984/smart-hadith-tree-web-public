@@ -1,0 +1,43 @@
+# Local / single-host stack: SQL Server + API + web.
+#   export MSSQL_SA_PASSWORD='<strong password>'  TOGETHER_API_KEY='<key>'  (GEMINI_API_KEY is the fallback)
+#   docker compose up --build
+# Then restore the database (see deploy/deployment.md) and open http://localhost:3000
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?set MSSQL_SA_PASSWORD}
+    volumes:
+      - sqldata:/var/opt/mssql
+      - ./backups:/backups:ro
+    ports:
+      - "1433:1433"
+
+  api:
+    build:
+      context: .
+      dockerfile: src/SmartHadithTree.Api/Dockerfile
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=SmartHadithTree;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
+      Together__ApiKey: ${TOGETHER_API_KEY:-}
+      Together__ExtraBody: ${TOGETHER_EXTRA_BODY:-}
+      Gemini__ApiKey: ${GEMINI_API_KEY:-}
+      Cors__AllowedOrigins__0: ${WEB_ORIGIN:-http://localhost:3000}
+    ports:
+      - "5147:8080"
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE: ${PUBLIC_API_BASE:-http://localhost:5147/api}
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  sqldata:

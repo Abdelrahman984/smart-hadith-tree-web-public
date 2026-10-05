@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.next/
+**/.git
+**/playwright-report/
+**/test-results/
+backups/
+data/
+docs/
+experiments/
+scripts/
+*.bak

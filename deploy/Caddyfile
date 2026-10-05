@@ -1,0 +1,19 @@
+# TLS certificates are requested and renewed automatically (needs ports 80 and 443 open and DNS pointing here).
+{
+	email {$ACME_EMAIL}
+}
+
+{$WEB_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:3000
+}
+
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	# AdminController has no authentication (and a hard-coded Windows path): never expose it.
+	@admin path /api/admin /api/admin/*
+	respond @admin 404
+
+	reverse_proxy api:8080
+}

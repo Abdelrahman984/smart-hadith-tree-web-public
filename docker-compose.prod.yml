@@ -1,0 +1,83 @@
+# Production stack on a single Linux host: SQL Server + API + web + Caddy (automatic HTTPS).
+# Configuration comes from a git-ignored `.env` file next to this file (template: .env.production.example).
+# Full runbook: deploy/devops-handoff.md
+#   docker compose -f docker-compose.prod.yml up -d db     # first, then restore the backup, then:
+#   docker compose -f docker-compose.prod.yml up -d --build
+name: smart-hadith-tree   # own project name: containers, network and volumes can't collide with other stacks on the host
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?set MSSQL_SA_PASSWORD}
+      MSSQL_MEMORY_LIMIT_MB: ${MSSQL_MEMORY_LIMIT_MB:-2048}
+    volumes:
+      - sqldata:/var/opt/mssql
+      - ./backups:/backups
+    # No published ports: only the api container reaches the database, over the compose network.
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  api:
+    build:
+      context: .
+      dockerfile: src/SmartHadithTree.Api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=SmartHadithTree;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
+      Together__ApiKey: ${TOGETHER_API_KEY:-}
+      Together__Model: ${TOGETHER_MODEL:-zai-org/GLM-5.3-Flash}
+      Together__ExtraBody: ${TOGETHER_EXTRA_BODY:-}
+      Gemini__ApiKey: ${GEMINI_API_KEY:-}
+      Cors__AllowedOrigins__0: https://${WEB_DOMAIN:?set WEB_DOMAIN}
+      VERIFY_REVIEW_TIMEOUT_SECONDS: ${VERIFY_REVIEW_TIMEOUT_SECONDS:-8}
+    ports:
+      # Localhost only: the reverse proxy (bundled Caddy or the host's own) forwards to these.
+      - "127.0.0.1:${API_PORT:-5147}:8080"
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # Inlined into the client bundle at build time: changing the domain needs a rebuild.
+        NEXT_PUBLIC_API_BASE: https://${API_DOMAIN:?set API_DOMAIN}/api
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3100}:3000"
+
+  # Bundled reverse proxy. Only starts when COMPOSE_PROFILES=caddy (set in .env). Leave it empty if the
+  # host already has a proxy on ports 80/443 (nginx, Traefik, ...): see deploy/devops-handoff.md section 2.
+  caddy:
+    image: caddy:2
+    profiles: ["caddy"]
+    restart: unless-stopped
+    depends_on:
+      - web
+      - api
+    environment:
+      WEB_DOMAIN: ${WEB_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  sqldata:
+  caddy_data:
+  caddy_config:

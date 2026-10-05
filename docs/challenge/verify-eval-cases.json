@@ -1,0 +1,280 @@
+{
+  "_note": "Test cases for POST /api/Verify. 'accept' lists the statuses that count as a pass. Positives are well-known matns of the Sahihayn and Sunan; negatives are invented, altered, or have no origin as a hadith. Confirm every expectation against your own corpus before quoting results (a text may exist in a book outside the 31). Add cases freely.",
+  "cases": [
+    {
+      "id": "P01",
+      "group": "positive-exact",
+      "text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "P02",
+      "group": "positive-exact",
+      "text": "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
+      "accept": [
+        "exact"
+      ],
+      "why": "diacritics must not matter"
+    },
+    {
+      "id": "P03",
+      "group": "positive-exact",
+      "text": "الطهور شطر الإيمان",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "P04",
+      "group": "positive-exact",
+      "text": "من حسن إسلام المرء تركه ما لا يعنيه",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "P05",
+      "group": "positive-exact",
+      "text": "الدين النصيحة قلنا لمن قال لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "P06",
+      "group": "positive-exact",
+      "text": "من غشنا فليس منا",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "P07",
+      "group": "positive-exact",
+      "text": "المسلم من سلم المسلمون من لسانه ويده",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "V01",
+      "group": "positive-variant",
+      "text": "إنما الأعمال بالنية وإنما لكل امرئ ما نوى",
+      "accept": [
+        "exact",
+        "variant"
+      ],
+      "why": "singular النية instead of النيات"
+    },
+    {
+      "id": "V02",
+      "group": "positive-variant",
+      "text": "لا يؤمن أحدكم حتى يحب لأخيه المسلم ما يحب لنفسه",
+      "accept": [
+        "exact",
+        "variant"
+      ],
+      "why": "extra word المسلم"
+    },
+    {
+      "id": "V03",
+      "group": "positive-variant",
+      "text": "الجنة أقرب لأحدكم من شراك نعله",
+      "accept": [
+        "exact",
+        "variant"
+      ],
+      "why": "لأحدكم instead of إلى أحدكم (reported failure)"
+    },
+    {
+      "id": "V04",
+      "group": "positive-variant",
+      "text": "الجنة أقرب إلى أحدكم من شراك نعله",
+      "accept": [
+        "exact",
+        "variant"
+      ]
+    },
+    {
+      "id": "N01",
+      "group": "negative",
+      "text": "حب الوطن من الإيمان",
+      "accept": [
+        "not-found"
+      ],
+      "why": "widely quoted, no origin as a hadith"
+    },
+    {
+      "id": "N02",
+      "group": "negative",
+      "text": "إنما الأعمال ليست بالنيات وإنما لكل امرئ ما نوى",
+      "accept": [
+        "not-found"
+      ],
+      "why": "negation of a real hadith reverses the meaning; neither exact nor variant is acceptable",
+      "reject": [
+        "exact",
+        "variant"
+      ]
+    },
+    {
+      "id": "N03",
+      "group": "negative",
+      "text": "من قال سبحان الله ثلاثين مرة بنى الله له قصرا من الياقوت الأحمر",
+      "accept": [
+        "not-found"
+      ],
+      "why": "invented"
+    },
+    {
+      "id": "N04",
+      "group": "negative",
+      "text": "من صلى الفجر ثم قرأ هذه الآية وجبت له الجنة بغير حساب ولا عذاب",
+      "accept": [
+        "not-found"
+      ],
+      "why": "invented"
+    },
+    {
+      "id": "I01",
+      "group": "invalid",
+      "text": "إنما الأعمال",
+      "accept": [
+        "invalid"
+      ],
+      "why": "fewer than 3 words"
+    },
+    {
+      "id": "P08",
+      "group": "positive-exact",
+      "text": "فمن كانت هجرته إلى دنيا يصيبها أو امرأة ينكحها فهجرته إلى ما هاجر إليه",
+      "accept": [
+        "exact"
+      ],
+      "why": "quote from the middle of a hadith"
+    },
+    {
+      "id": "P09",
+      "group": "positive-exact",
+      "text": "الكلمة الطيبة صدقة",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "P10",
+      "group": "positive-exact",
+      "text": "لا يدخل الجنة نمام",
+      "accept": [
+        "exact"
+      ]
+    },
+    {
+      "id": "G01",
+      "group": "grey-zone",
+      "text": "لا يكمل إيمان أحدكم حتى يحب لأخيه ما يحب لنفسه",
+      "accept": [
+        "variant"
+      ],
+      "why": "paraphrase (يكمل instead of يؤمن): text matching alone is below the variant threshold, so only the model's grounded upgrade can reach 'variant'"
+    },
+    {
+      "id": "G02",
+      "group": "grey-zone",
+      "text": "الابتسامة في وجه أخيك صدقة",
+      "accept": [
+        "variant"
+      ],
+      "why": "paraphrase of 'تبسمك في وجه أخيك لك صدقة' (Tirmidhi); needs that book in the corpus"
+    },
+    {
+      "id": "A01",
+      "group": "altered",
+      "text": "إنما الأقوال بالنيات وإنما لكل امرئ ما نوى",
+      "accept": [
+        "not-found",
+        "variant"
+      ],
+      "reject": [
+        "exact"
+      ],
+      "why": "one key word swapped (الأعمال -> الأقوال). Word-pair match is ~71%, so 'variant' is acceptable ONLY if the response names the changed word in unmatchedWords; 'exact' is never acceptable. (Originally required not-found via the model's veto, but the model review takes 10-25s and times out.)",
+      "unmatched_contains": [
+        "الأقوال"
+      ]
+    },
+    {
+      "id": "A02",
+      "group": "altered",
+      "text": "من نصحنا فليس منا",
+      "accept": [
+        "not-found"
+      ],
+      "reject": [
+        "exact",
+        "variant"
+      ],
+      "why": "opposite meaning of 'من غشنا فليس منا'"
+    },
+    {
+      "id": "A03",
+      "group": "altered",
+      "text": "الصلاة شطر الإيمان",
+      "accept": [
+        "not-found"
+      ],
+      "reject": [
+        "exact",
+        "variant"
+      ],
+      "why": "altered subject of 'الطهور شطر الإيمان'"
+    },
+    {
+      "id": "N05",
+      "group": "found-in-corpus",
+      "text": "خير الأمور أوساطها",
+      "accept": [
+        "exact"
+      ],
+      "why": "found in مصنف ابن أبي شيبة 37861 with similarity 1.0 (diagnostics), so the saying IS in the corpus; 'exact' means present in the book, not authentic. Open the matn to see how it is attributed."
+    },
+    {
+      "id": "N06",
+      "group": "negative",
+      "text": "الدنيا مزرعة الآخرة",
+      "accept": [
+        "not-found"
+      ],
+      "why": "a saying, not a hadith; confirm against your corpus"
+    },
+    {
+      "id": "N07",
+      "group": "negative",
+      "text": "العلم في الصغر كالنقش على الحجر",
+      "accept": [
+        "not-found"
+      ],
+      "why": "a proverb"
+    },
+    {
+      "id": "N08",
+      "group": "negative",
+      "text": "الناس نيام فإذا ماتوا انتبهوا",
+      "accept": [
+        "not-found"
+      ],
+      "why": "attributed to Ali, not a hadith; confirm against your corpus (may be quoted in a book)"
+    },
+    {
+      "id": "N09",
+      "group": "negative",
+      "text": "من جد وجد ومن زرع حصد",
+      "accept": [
+        "not-found"
+      ],
+      "why": "a proverb"
+    }
+  ]
+}

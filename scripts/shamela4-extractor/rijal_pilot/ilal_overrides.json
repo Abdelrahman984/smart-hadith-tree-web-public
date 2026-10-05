@@ -1,0 +1,225 @@
+{
+ "_comment": "Links of the Ilal data decided by hand (link_ilal.py). mudallisin: by entry number in طبقات المدلسين; mukhtalitun: by the merged record's name. id null = not in the registry. From the review of all 174 mudallisin links (review/mudallisin_review.json, Sonnet first pass, checked by hand). students: by «mukhtalit name|student name» as in the hearing record (review/mukhtalitun_review.json, Sonnet first pass, every non-right item checked by hand).",
+ "mudallisin": {
+  "14": {
+   "id": "tk2958",
+   "note": "طاووس in Tahdhib"
+  },
+  "24": {
+   "id": "khatib:1426",
+   "note": "al-Marzubani, محمد بن عمران بن موسى بن عبيد الكاتب"
+  },
+  "26": {
+   "id": null,
+   "note": "Ibn Masdi, 7th-century Andalusi; not al-Firyabi"
+  },
+  "45": {
+   "id": "tk1483",
+   "note": "Tahdhib header typo «أبي سلميان»"
+  },
+  "87": {
+   "id": null,
+   "note": "عثمان بن عمر الحنفي, from Ibn Jurayj; not al-Taymi (tk3849)"
+  },
+  "94": {
+   "id": null,
+   "note": "محمد بن الحسين البخاري, from Waki'; not the later Abu Nasr"
+  },
+  "100": {
+   "id": "irshad:996",
+   "note": "al-Baghandi; rayy:418 is the same man (not merged), khatib:1526 his brother"
+  },
+  "113": {
+   "id": "tk7336",
+   "note": "Abu Khalid al-Dalani (kunya entry); tk7022 is Ibn Abi Malik (#114)"
+  },
+  "130": {
+   "id": "tk438s",
+   "note": "Abu Isra'il al-Mula'i, إسماعيل بن خليفة in Tahdhib"
+  },
+  "142": {
+   "id": null,
+   "note": "Abu Qatada al-Harrani (ت): no entry of his own in Shamela's Tahdhib text, only in lists"
+  },
+  "146": {
+   "id": "tk3838",
+   "note": "al-Tara'ifi is عثمان بن عبد الرحمن بن مسلم الحراني; tk3841 is a bare stub"
+  },
+  "148": {
+   "id": "rijal_hakim:1092",
+   "note": "tuhfa:3207 is the same bare name"
+  },
+  "149": {
+   "id": null,
+   "note": "Malik b. Sulayman al-Harawi; not al-Alhani"
+  },
+  "159": {
+   "id": "tk3020",
+   "note": "the book's «عاصم بن عمرو بن قتادة» is عاصم بن عمر بن قتادة"
+  },
+  "162": {
+   "id": "tk3438s",
+   "note": "عبد العزيز بن جريج, Ibn Jurayj's father (Taqrib: لم يسمع من عائشة); «جريح» is a typo"
+  },
+  "166": {
+   "id": "tk3944",
+   "note": "عطاء بن نافع الكيخاراني, «ويقال عطاء بن يعقوب»; tk3947 says he is not al-Kaykharani"
+  }
+ },
+ "mukhtalitun": {
+  "أبان بن صمعة بالصاد المهملة الأنصاري": {
+   "id": "tk138",
+   "note": "Tahdhib entry spelled 'أبان بن صعصعة الأنصاري البصري' (typo for صمعة), 'والد عتبة الغلام' matches the source"
+  },
+  "أحمد بن أبي القاسم بن سنبلة البغدادي": {
+   "id": null,
+   "note": "tk17 is Abu Mus'ab al-Zuhri (d.242); the source man is a late Baghdadi shaykh (Ibn Sunbula, d.212 per Mizan); not in registry"
+  },
+  "سعيد بن سفيان الأندلسي": {
+   "id": null,
+   "note": "tk2285 is al-Jahdari of Basra; the source man is a late Andalusi; not in registry"
+  },
+  "عبد الله بن محمد بن محمد بن سليمان النشاوري المكي": {
+   "id": null,
+   "note": "tk3543s is Ibn Aqil (Madani); source is al-Nashawuri al-Makki, a late scholar; not in registry"
+  },
+  "عبد الله بن واقد أبو قتادة الحراني": {
+   "id": null,
+   "note": "tk3236s is Abdullah b. Waqid al-Umari (Madani); Abu Qatada al-Harrani is a different man; not in registry (tk3635s is Abu Raja al-Harawi)"
+  },
+  "محمد بن أحمد بن الحسين بن القاسم بن السرى بن الغطريف الغطريفي الجرجاني الرباطي": {
+   "id": null,
+   "note": "Abu Ahmad al-Ghitrifi (Muhammad b. Ahmad b. al-Husayn b. al-Qasim); rawd:727 is Abu Bakr al-Hashimi al-Warraq (b. al-Hasan b. Sa'id); not in"
+  },
+  "محمد بن أحمد بن الحسن الجرجاني": {
+   "id": null,
+   "note": "conflated with al-Ghitrifi in the source; rawd:727 unverified"
+  },
+  "محمد بن مبارك بن مشق البغدادي": {
+   "id": null,
+   "note": "tk5577 is Muhammad b. al-Mubarak al-Suri of Damascus; source is Ibn Mashaq al-Baghdadi, a late student of hadith; not in registry"
+  },
+  "محمد بن سعيد بن نبهان الكاتب": {
+   "id": null,
+   "note": "tk5317 is Muhammad b. Ai'dh; source is Muhammad b. Sa'id b. Nabhan al-Katib (centenarian, Baghdad); not in registry"
+  },
+  "محمد بن موسى بن محمد اللخمي الشافعي بن سند الحافظ شمس الدين": {
+   "id": null,
+   "note": "irshad:1016 is al-Ma'afiri al-Misri (Tabarani's era); source is the 8th-c hafiz Ibn Sanad al-Lakhmi; not in registry"
+  },
+  "عبد الله بن صالح بن محمد بن مسلم الجهني المصري أبو صالح كاتب الليث بن سعد": {
+   "id": "tk3336",
+   "note": "tk3336 'عبد الله بن صالح بن محمد بن مسلم الجهني أبو صالح كاتب الليث' is exactly the man (flagged ambiguous only because of other tk3337 etc."
+  },
+  "إسماعيل بن يزيد بن حريث بن مردانبه القطان أبو أحمد": {
+   "id": "tuhfa:886",
+   "note": "bare «إسماعيل بن يزيد القطان»; name matches, unverified"
+  },
+  "حماد بن أبي سليمان مسلم الأشعري مولاهم أبو إسماعيل الكوفي الفقيه": {
+   "id": "tk1483",
+   "note": "tk1483 'حماد بن أبي سلميان واسمه مسلم الأشعري أبو إسماعيل الكوفي الفقيه' (typo in registry header)"
+  },
+  "عبد الله بن الحسين أبو أحمد السامري": {
+   "id": null,
+   "note": "rawd:483 is Abu al-Abbas al-Nadri al-Marwazi; source is Abu Ahmad al-Samiri, Egyptian Qur'an shaykh (companion of Ibn Mujahid); not in regis"
+  },
+  "عبد الرحيم بن أحمد بن علي بن طلحة الأنصاري السبتي ابن عليم": {
+   "id": null,
+   "note": "khatib:5726 is another Abd al-Rahim"
+  },
+  "الفضل بن محمد بن الفضل أبو القاسم النيسابوري": {
+   "id": null,
+   "note": "rawd:679 has another kunya (أبو الهيثم)"
+  },
+  "مجاهد بن سعيد الهمداني": {
+   "id": null,
+   "note": "tuhfa:3560 is 'الأصبحي'; source is Mujahid b. Sa'id al-Hamdani (Kufi, d.144); not in registry"
+  },
+  "محمد بن إبراهيم الجرجاني الكيال": {
+   "id": "rawd:693",
+   "note": "same name and nisba, unverified"
+  },
+  "محمد بن الحسين بن علي أبو جعفر الطوسي": {
+   "id": null,
+   "note": "rawd:849 is Muhammad b. al-Hasan b. Zayd (Abu Ahmad al-Warraq al-Tusi); source is Muhammad b. al-Husayn b. Ali Abu Ja'far al-Tusi (Ibn al-Na"
+  },
+  "محمد بن الحسين بن الأعرابي الحافظ": {
+   "id": null,
+   "note": "the source says Ibn al-A'rabi; tk5154 does not fit"
+  }
+ },
+ "students": {
+  "سعيد بن إياس أبو مسعود الجريري|إسحاق الأزرق": {
+   "id": "tk395",
+   "note": "Ishaq b. Yusuf al-Azraq: khatib:3318 duplicates tk395; prefer tk"
+  },
+  "سعيد بن أبي عروبة|عبدة بن سليمان": {
+   "id": "tk3613",
+   "note": "Abda b. Sulayman al-Kilabi al-Kufi, the famous student of Ibn Abi Aruba"
+  },
+  "شريك بن عبد الله النخعي أبو عبد الله القاضي|إسحاق الأزرق": {
+   "id": "tk395",
+   "note": "Ishaq b. Yusuf al-Azraq: khatib:3318 duplicates tk395; prefer tk"
+  },
+  "عبد الرزاق بن همام بن نافع الحميدي الصنعاني أبو بكر|أحمد بن حنبل": {
+   "id": "tk96",
+   "note": "Ahmad b. Hanbal: rijal_hakim:259 is a duplicate of tk96; prefer tk"
+  },
+  "عبد الرزاق بن همام بن نافع الحميدي الصنعاني أبو بكر|أحمد بن محمد": {
+   "id": "tk94",
+   "note": "the 'after blindness' man is Ahmad b. Muhammad b. Shabuya al-Marwazi (Athram's source), not Ahmad b. Hanbal who heard before"
+  },
+  "عبد الرزاق بن همام بن نافع الحميدي الصنعاني أبو بكر|إبراهيم بن منصور الرمادي": {
+   "id": null,
+   "note": "the known late student is Ahmad b. Mansur al-Ramadi (tk113); the source name may be an error"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|ابن ماجة": {
+   "id": "tk5710",
+   "note": "Ibn Majah (Muhammad b. Yazid al-Qazwini)"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|أبو مسلم": {
+   "id": "irshad:26",
+   "note": "Abu Muslim al-Kajji, Ibrahim b. Abdullah, Basran, d.292"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|أبو بكر بن أبي داود": {
+   "id": "irshad:576",
+   "note": "Abu Bakr b. Abi Dawud, Abdullah b. Sulayman b. al-Ash'ath"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|محمد بن إسحاق الصغاني": {
+   "id": "tk5053",
+   "note": "al-Saghani (Muhammad b. Ishaq b. Ja'far, tk5053), not Ibn Khuzayma rayy:322"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|أبو عروبة الحسين بن محمد": {
+   "id": "irshad:417",
+   "note": "Abu Aruba al-Harrani, al-Husayn b. Muhammad b. Mawdud (dup tuhfa:1409)"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|أحمد بن سليمان النجاد": {
+   "id": "rawd:79",
+   "note": "Ahmad b. Salman al-Najjad (also mukhtalit #121 in this set)"
+  },
+  "عبد الملك بن محمد بن عبد الله بن محمد بن عبد الملك بن مسلم الرقاشي الحافظ الضرير أبو قلابة|عبد الله بن إسحاق بن إبراهيم بن الخرساني": {
+   "id": "rawd:473",
+   "note": "Abdullah b. Ishaq b. Ibrahim al-Khurasani al-Baghdadi (rawd:473); irshad:564 is a Halabi 'Saffari'"
+  },
+  "محمد بن الفضل أبو النعمان السدوسي الحافظ عارم|أحمد بن حنبل": {
+   "id": "tk96",
+   "note": "Ahmad b. Hanbal: rijal_hakim:259 is a duplicate of tk96; prefer tk"
+  },
+  "محمد بن الفضل أبو النعمان السدوسي الحافظ عارم|عبد الله بن محمد المسندي": {
+   "id": "tk3536s",
+   "note": "Abdullah b. Muhammad al-Musnadi al-Ju'fi, Bukhari's shaykh"
+  },
+  "محمد بن أحمد بن الحسين بن القاسم بن السرى بن الغطريف الغطريفي الجرجاني الرباطي|القاضي أبو الطيب طاهر بن عبد الله الطبري": {
+   "id": "khatib:4879",
+   "note": "al-Qadi Abu al-Tayyib Tahir b. Abdullah al-Tabari al-Faqih al-Shafi'i"
+  },
+  "هاشم بن القاسم بن شيبة القرشي أبو محمد|أبو عروبة الحراني": {
+   "id": "irshad:417",
+   "note": "Abu Aruba al-Harrani, al-Husayn b. Muhammad (Harrani, same city as Hashim b. al-Qasim al-Harrani)"
+  },
+  "مجاهد بن سعيد الهمداني|أبو أسامة": {
+   "id": "tk1471",
+   "note": "Abu Usama = Hammad b. Usama al-Kufi (tk1471)"
+  }
+ }
+}

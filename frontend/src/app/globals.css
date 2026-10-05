@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@xyflow/react/dist/style.css";
+
+/*
+ * Theme tokens. The look is light; colours are named by role so the theme lives in one place:
+ *   surface / surface-muted  page and card backgrounds      ink / ink-muted / ink-subtle  text
+ *   line                     borders and dividers           brand-teal-ink                teal for TEXT on light surfaces
+ * `brand-teal` (#00C2CB) is only 2.2:1 on white, so use it for fills, rings and dark backgrounds
+ * (navy header/footer, active buttons) and `brand-teal-ink` (5.1:1 on white) wherever teal is text or an icon.
+ */
+:root {
+  color-scheme: light;
+}
+
+@theme {
+  --color-brand-blue: #1A3A5C;
+  --color-brand-teal: #00C2CB;
+  --color-brand-dark: #0F243A;
+  --color-brand-teal-ink: #0B7A83;
+
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc; /* slate-50 */
+  --color-line: #e2e8f0; /* slate-200 */
+  --color-ink: #1e293b; /* slate-800 */
+  --color-ink-muted: #475569; /* slate-600 */
+  --color-ink-subtle: #64748b; /* slate-500: 4.8:1 on white */
+
+  --font-arabic: var(--font-noto-sans-arabic), sans-serif;
+  --font-latin: var(--font-inter), sans-serif;
+  --font-sans: var(--font-arabic);
+}
+
+body {
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+}
+
+/* React Flow RTL Fixes */
+.react-flow[dir="ltr"] .react-flow__node {
+  direction: rtl; /* Reset direction inside nodes */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

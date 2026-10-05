@@ -1,0 +1,6 @@
+@SmartHadithTree.Api_HostAddress = http://localhost:5147
+
+GET {{SmartHadithTree.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

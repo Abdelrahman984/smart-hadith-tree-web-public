@@ -1,0 +1,188 @@
+{
+  "_note": "Search evaluation cases. 'query' is what a user might type (words, not always a phrase); 'target_contains' is a distinctive piece of the matn the user is looking for (found by substring after removing diacritics and folding hamza), so cases do not depend on book numbers. Targets were written from memory: if one is never found, check the wording in your corpus before blaming the search. Add your own cases, especially long hadiths where the searched words are far apart: put a piece of that decoy in 'decoys_contains' and the runner reports when a decoy ranks above the target. 'relevant_contains' (optional) lists substrings that any relevant result contains, so precision of the top 10 and the AI labels can be checked even when the exact wording in 'target_contains' is rare. 'probe' cases have no target: they only show the labels and the review pack for queries of common words, where hadiths with the words far apart are likely.",
+  "cases": [
+    {
+      "id": "S01",
+      "query": "الأعمال النيات",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "إنما الأعمال بالنيات",
+      "decoys_contains": []
+    },
+    {
+      "id": "S02",
+      "query": "الطهور الإيمان",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "الطهور شطر الإيمان",
+      "decoys_contains": [],
+      "relevant_contains": [
+        "الطهور شطر الايمان",
+        "الطهور نصف الايمان"
+      ]
+    },
+    {
+      "id": "S03",
+      "query": "المسلم لسانه ويده",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "المسلم من سلم المسلمون من لسانه ويده",
+      "decoys_contains": [],
+      "relevant_contains": [
+        "من سلم المسلمون من لسانه ويده"
+      ]
+    },
+    {
+      "id": "S04",
+      "query": "الدين النصيحة",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "الدين النصيحة",
+      "decoys_contains": []
+    },
+    {
+      "id": "S05",
+      "query": "غشنا فليس منا",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "من غشنا فليس منا",
+      "decoys_contains": []
+    },
+    {
+      "id": "S06",
+      "query": "لا يؤمن أحدكم يحب لأخيه",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",
+      "decoys_contains": []
+    },
+    {
+      "id": "S07",
+      "query": "الجنة أقرب شراك نعله",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "الجنة أقرب إلى أحدكم من شراك نعله",
+      "decoys_contains": []
+    },
+    {
+      "id": "S08",
+      "query": "حسن إسلام المرء تركه",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "من حسن إسلام المرء تركه ما لا يعنيه",
+      "decoys_contains": []
+    },
+    {
+      "id": "S09",
+      "query": "الكلمة الطيبة صدقة",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "الكلمة الطيبة صدقة",
+      "decoys_contains": []
+    },
+    {
+      "id": "S10",
+      "query": "لا يدخل الجنة نمام",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "لا يدخل الجنة نمام",
+      "decoys_contains": []
+    },
+    {
+      "id": "S11",
+      "query": "الحلال بين الحرام بين",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "إن الحلال بين وإن الحرام بين",
+      "decoys_contains": [],
+      "relevant_contains": [
+        "الحلال بين والحرام بين",
+        "الحلال بين وان الحرام بين",
+        "الحلال بين وان الحرام بين"
+      ]
+    },
+    {
+      "id": "S12",
+      "query": "الله كتب الإحسان كل شيء",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "إن الله كتب الإحسان على كل شيء",
+      "decoys_contains": []
+    },
+    {
+      "id": "S13",
+      "query": "اتق الله حيثما كنت",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "اتق الله حيثما كنت",
+      "decoys_contains": []
+    },
+    {
+      "id": "S14",
+      "query": "لا ضرر ولا ضرار",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "لا ضرر ولا ضرار",
+      "decoys_contains": []
+    },
+    {
+      "id": "S15",
+      "query": "الدنيا سجن المؤمن",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "الدنيا سجن المؤمن وجنة الكافر",
+      "decoys_contains": []
+    },
+    {
+      "id": "S16",
+      "query": "خيركم تعلم القرآن وعلمه",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "خيركم من تعلم القرآن وعلمه",
+      "decoys_contains": []
+    },
+    {
+      "id": "S17",
+      "query": "إنما بعثت لأتمم صالح الأخلاق",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "إنما بعثت لأتمم صالح الأخلاق",
+      "decoys_contains": []
+    },
+    {
+      "id": "S18",
+      "query": "الراحمون يرحمهم الرحمن",
+      "scope": 1,
+      "match": 0,
+      "target_contains": "الراحمون يرحمهم الرحمن",
+      "decoys_contains": []
+    },
+    {
+      "id": "D01",
+      "query": "الصلاة الوضوء الماء الطهارة",
+      "scope": 1,
+      "match": 0,
+      "probe": true,
+      "target_contains": "",
+      "decoys_contains": []
+    },
+    {
+      "id": "D02",
+      "query": "الله رسوله الجنة المسجد",
+      "scope": 1,
+      "match": 0,
+      "probe": true,
+      "target_contains": "",
+      "decoys_contains": []
+    },
+    {
+      "id": "D03",
+      "query": "الصدقة اليتيم الجار المسكين",
+      "scope": 1,
+      "match": 0,
+      "probe": true,
+      "target_contains": "",
+      "decoys_contains": []
+    }
+  ]
+}

@@ -1,0 +1,1158 @@
+{
+ "conflicts": [
+  {
+   "type": "only_in_one_book",
+   "narrator": "إسماعيل بن عياش بن سليم بالضم معدود في الحمصيين",
+   "narrator_id": 7,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:7"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "الحسين بن الحسين",
+   "narrator_id": 16,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:16"
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "سعيد بن إياس أبو مسعود الجريري",
+   "narrator_id": 24,
+   "student": "يزيد بن هارون",
+   "scopes": [
+    "within_same_source"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "main:24",
+     "timing": "before",
+     "source": "author",
+     "critic": "يزيد بن هارون",
+     "quote": "سمعت منه سنة اثنتين وأربعين ومئة وهى أول سنة دخلت البصرة ولم ننكر منه شيئا"
+    },
+    {
+     "book": 309,
+     "entry": "main:24",
+     "timing": "after",
+     "source": "author",
+     "critic": "(قيل) / ابن سعد",
+     "quote": "وقد قيل أن يزيد بن هارون إنما سمع منه بعد التغيير"
+    }
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "سعيد بن أبي عروبة",
+   "narrator_id": 25,
+   "student": "عبدة بن سليمان",
+   "scopes": [
+    "within_same_source"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "main:25",
+     "timing": "before",
+     "source": "author",
+     "critic": "يحيى بن معين",
+     "quote": "وأثبت الناس سماعا منه عبدة بن سليمان"
+    },
+    {
+     "book": 309,
+     "entry": "main:25",
+     "timing": "after",
+     "source": "author",
+     "critic": "عبدة بن سليمان",
+     "quote": "وقال عبدة بن سليمان عن نفسه إنه سمع منه في الاختلاط"
+    },
+    {
+     "book": 25846,
+     "entry": "main:18",
+     "timing": "before",
+     "source": "author",
+     "critic": "ابن معين",
+     "quote": "وأثبت الناس سماعا منه عَبدة بن سليمان"
+    },
+    {
+     "book": 25846,
+     "entry": "main:18",
+     "timing": "after",
+     "source": "author",
+     "critic": "عبدة بن سليمان (نقله العلائي)",
+     "quote": "جاء عن عبدة نفسه أنه قال: سمعت من سعيد في الاختلاط"
+    }
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "سعيد بن أبي عروبة",
+   "narrator_id": 25,
+   "student": "أبو نعيم الفضل بن دكين",
+   "scopes": [
+    "cross_book"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "main:25",
+     "timing": "after",
+     "source": "author",
+     "critic": "الأبناسي",
+     "quote": "وممن سمع منه في الاختلاط أبو نعيم الفضل بن دكين"
+    },
+    {
+     "book": 25846,
+     "entry": "main:18",
+     "timing": "before",
+     "source": "author",
+     "critic": "أبو نعيم",
+     "quote": "كتبت حديثين ثم اختلط فقمت وتركته"
+    }
+   ]
+  },
+  {
+   "type": "severity",
+   "narrator": "سفيان بن عيينة بن أبي عمران واسمه ميمون",
+   "narrator_id": 27,
+   "severity": [
+    {
+     "book": 309,
+     "value": "disputed"
+    },
+    {
+     "book": 25846,
+     "value": "light"
+    }
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "سعيد بن سفيان الأندلسي",
+   "narrator_id": 31,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:31"
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "عطاء بن السائب بن مالك الثقفي أبو السائب",
+   "narrator_id": 39,
+   "student": "حماد بن سلمة",
+   "scopes": [
+    "cross_book"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "main:39",
+     "timing": "before",
+     "source": "author",
+     "critic": "ابن معين وأبو داود والطحاوي وحمزة الكناني",
+     "quote": "وقد استثنى الجمهور رواية حماد بن سلمة عنه أيضا قاله بن معين وأبو داود والطحاوي وحمزة الكناني"
+    },
+    {
+     "book": 309,
+     "entry": "main:39",
+     "timing": "after",
+     "source": "author",
+     "critic": "العقيلي (وعبد الحق)",
+     "quote": "فأما جرير وخالد بن عبد الله وابن علية وعلى بن عاصم وحماد بن سلمة وأهل البصرة فأحاديثهم عنه مما سمع منه بعد الاختلاط"
+    },
+    {
+     "book": 25846,
+     "entry": "main:33",
+     "timing": "after",
+     "source": "author",
+     "critic": "العقيلي",
+     "quote": "وذكر العقيلي أن حماد بن سلمة ممن سمع منه بعد الاختلاط"
+    }
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "عمرو بن عبد الله بن عبيد ويقال عمرو بن عبد الله بن علي الهمداني أبو إسحاق السبيعي",
+   "narrator_id": 41,
+   "student": "إسرائيل بن يونس",
+   "scopes": [
+    "cross_book"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "main:41",
+     "timing": "after",
+     "source": "author",
+     "critic": "الأبناسي",
+     "quote": "وقد ذكر ذلك عن إسرائيل بن يونس وزكريا بن أبي زائدة وزهير بن معاوية وفي رواته زائدة بن قدامة"
+    },
+    {
+     "book": 25846,
+     "entry": "main:35",
+     "timing": "before",
+     "source": "author",
+     "critic": "العلائي",
+     "quote": "ومثلهم أيضا إسرائيل بن يونس وأقرانه"
+    }
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن محمد بن محمد بن سليمان النشاوري المكي",
+   "narrator_id": 43,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:43"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن واقد أبو قتادة الحراني",
+   "narrator_id": 44,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:44"
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "محمد بن الفضل أبو النعمان السدوسي الحافظ عارم",
+   "narrator_id": 52,
+   "student": "علي بن عبد العزيز البغوي",
+   "scopes": [
+    "within_same_source"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "main:52",
+     "timing": "before",
+     "source": "author",
+     "critic": "أبو حاتم (بحسب تأريخه)",
+     "quote": "وعلى قول أبي حاتم يكون سماعه منه قبل اختلاطه"
+    },
+    {
+     "book": 309,
+     "entry": "main:52",
+     "timing": "after",
+     "source": "author",
+     "critic": "أبو داود (بحسب تأريخه)",
+     "quote": "على قول أبي داود أنه استحكم به الاختلاط سنة ست عشرة لأن سماع على كان في سنة سبع عشرة كما قاله العقيلي"
+    }
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن أحمد بن الحسن الجرجاني",
+   "narrator_id": 55,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:55"
+   ]
+  },
+  {
+   "type": "severity",
+   "narrator": "محمد بن الفضل بن محمد بن إسحاق بن خزيمة",
+   "narrator_id": 56,
+   "severity": [
+    {
+     "book": 309,
+     "value": "harmful"
+    },
+    {
+     "book": 25846,
+     "value": "light"
+    }
+   ]
+  },
+  {
+   "type": "no_one_after_vs_after_claims",
+   "narrator": "محمد بن الفضل بن محمد بن إسحاق بن خزيمة",
+   "narrator_id": 56,
+   "no_one_after_in": [
+    {
+     "book": 25846,
+     "entry": "main:42"
+    }
+   ],
+   "after_students": [],
+   "after_group_rules": [
+    "من أخذ عنه بعد ذي الحجة سنة 384"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن إسحاق بن يحيى بن منده الحافظ الجوال صاحب التصانيف",
+   "narrator_id": 59,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:59"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن عبد القادر بن عثمان الجعفري النابلسي الحنبلي",
+   "narrator_id": 62,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:62"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن موسى بن محمد اللخمي الشافعي بن سند الحافظ شمس الدين",
+   "narrator_id": 63,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:63"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أبو بكر بن عياش بن سالم الأسدي الإمام المقرىء",
+   "narrator_id": 68,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:68"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أبو جعفر الرازي مولى بني تميم",
+   "narrator_id": 69,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:69"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "سكرة بنت عبد الله الملقبة قطر النبات عتيقة جمال الدين محمد بن علي بن عبد النور",
+   "narrator_id": 70,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "main:70"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "إسحاق بن محمد بن إسماعيل بن عبد الله بن أبي فروة المدني أبو يعقوب",
+   "narrator_id": 71,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:1"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "إسماعيل بن مسلم المكي أبو إسحاق البصري",
+   "narrator_id": 72,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:1"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد العزيز بن أبان بن محمد الأموي السعيدي أبو خالد الكوفي",
+   "narrator_id": 74,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:2"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "الحارث بن عمير أبو عمير البصري نزيل مكة",
+   "narrator_id": 75,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:3"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن جعفر بن نجيح السعدي مولاهم أبو جعفر المديني والد علي بن المديني",
+   "narrator_id": 76,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:3"
+   ]
+  },
+  {
+   "type": "student_timing",
+   "narrator": "حجاج بن محمد المصيصي الأعور أبو محمد الترمذي الأصل نزل بغداد ثم المصيصة",
+   "narrator_id": 77,
+   "student": "سنيد (الحسين بن داود)",
+   "scopes": [
+    "within_same_source"
+   ],
+   "claims": [
+    {
+     "book": 309,
+     "entry": "appendix1:4",
+     "timing": "before",
+     "source": "editor",
+     "critic": "أحمد بن حنبل",
+     "quote": "كان سنيد لزم حجاجا قديما قد رأيت حجاجا يملي عليه وأرجو أن لا يكون حدث إلا بالصدق"
+    },
+    {
+     "book": 309,
+     "entry": "appendix1:4",
+     "timing": "after",
+     "source": "editor",
+     "critic": "الخلال عن الأثرم",
+     "quote": "وروى أن حجاجا كان هذا منه في وقت تغيره ويرى أن أحاديث الناس عن حجاج صحاح إلا ما روى سنيد"
+    }
+   ]
+  },
+  {
+   "type": "severity",
+   "narrator": "حجاج بن محمد المصيصي الأعور أبو محمد الترمذي الأصل نزل بغداد ثم المصيصة",
+   "narrator_id": 77,
+   "severity": [
+    {
+     "book": 309,
+     "value": "disputed"
+    },
+    {
+     "book": 25846,
+     "value": "light"
+    }
+   ]
+  },
+  {
+   "type": "no_one_after_vs_after_claims",
+   "narrator": "حجاج بن محمد المصيصي الأعور أبو محمد الترمذي الأصل نزل بغداد ثم المصيصة",
+   "narrator_id": 77,
+   "no_one_after_in": [
+    {
+     "book": 309,
+     "entry": "appendix1:4"
+    },
+    {
+     "book": 25846,
+     "entry": "main:10"
+    }
+   ],
+   "after_students": [
+    "سنيد (الحسين بن داود)"
+   ],
+   "after_group_rules": []
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "حماد بن سلمة بن دينار أبو سلمة البصري",
+   "narrator_id": 81,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:6"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "المثنى بن الصباح اليماني الأبناوي أبو عبيد الله",
+   "narrator_id": 82,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:6"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "خالد بن مهران أبو المنازل البصري الحذاء",
+   "narrator_id": 83,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:7"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "مجالد بن سعيد بن عمير الهمداني أبو عمرو ويقال أبو سعيد الكوفي",
+   "narrator_id": 84,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:7"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "خصيف بالصاد المهملة مصغرا ابن عبد الرحمن الجزري أبو عون",
+   "narrator_id": 86,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:8"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "زيد بن حبان الرقي كوفي الأصل مولى ربيعة",
+   "narrator_id": 88,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:9"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "سعد بن سنان بن سعد الكندي المصري",
+   "narrator_id": 89,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:10"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "نجيح بن عبد الرحمن السندي أبو معشر",
+   "narrator_id": 90,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:10"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "يحبى بن محمد بن عباد بن هانئ المدني الشجري",
+   "narrator_id": 92,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:11"
+   ]
+  },
+  {
+   "type": "no_one_after_vs_after_claims",
+   "narrator": "سعيد بن أبي سعيد كيسان المقبري أبو سعيد المدني",
+   "narrator_id": 93,
+   "no_one_after_in": [
+    {
+     "book": 25846,
+     "entry": "main:17"
+    }
+   ],
+   "after_students": [
+    "شعبة بن الحجاج"
+   ],
+   "after_group_rules": []
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "سعيد بن أبي هلال الليثي مولاهم أبو العلاء المصري قيل مدني الأصل",
+   "narrator_id": 95,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:13"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أبو بكر بن عبد الله بن أبي مريم الغساني الشامي",
+   "narrator_id": 96,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix2:13"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "سليمان بن موسى الأموى الدمشقي الأشدق",
+   "narrator_id": 97,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:14"
+   ]
+  },
+  {
+   "type": "severity",
+   "narrator": "سويد بن سعيد الهروي الاصل أبو محمد سكن الحديثة تحت غابة وفوق الأنبار",
+   "narrator_id": 98,
+   "severity": [
+    {
+     "book": 309,
+     "value": "disputed"
+    },
+    {
+     "book": 25846,
+     "value": "harmful"
+    }
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الحميد بن إبراهيم الحضرمي أبو تقي الحمصي",
+   "narrator_id": 102,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:19"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الرحمن بن أبي الزناد عبد الله بن ذكوان المدني مولى قريش",
+   "narrator_id": 104,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:21"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن رجاء المكي أبو عمران البصري نزيل مكة",
+   "narrator_id": 105,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:22"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن صالح بن محمد بن مسلم الجهني المصري أبو صالح كاتب الليث بن سعد",
+   "narrator_id": 107,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:24"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عكرمة بن عمار",
+   "narrator_id": 115,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:32"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "قيس بن الربيع الأسدي أبو محمد الكوفي",
+   "narrator_id": 116,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:33"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "الهيثم بن جميل البغدادي أبو سهل نزيل أنطاكية",
+   "narrator_id": 120,
+   "present_in": 309,
+   "absent_from": 25846,
+   "entries": [
+    "appendix1:37"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أحمد بن سلمان بن الحسن النجاد الحنبلي",
+   "narrator_id": 122,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "main:4"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "هشام بن عروة بن الزبير",
+   "narrator_id": 123,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "main:43"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أحمد بن بشير القرشي المخزومي",
+   "narrator_id": 124,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:2"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أحمد بن أبي سليمان القواريري",
+   "narrator_id": 125,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:3"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "إسماعيل بن يزيد بن حريث بن مردانبه القطان أبو أحمد",
+   "narrator_id": 126,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:11"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أفضل بن أبي الحسن بن محفوظ الحفار",
+   "narrator_id": 127,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:13"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "أنيس بن خالد",
+   "narrator_id": 128,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:14"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "برد علي بن برد أبو سعيد الأبهري",
+   "narrator_id": 129,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:16"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "بزغش بن عبد الله الرومي مولى أبي جعفر",
+   "narrator_id": 130,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:17"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "حماد بن أبي سليمان مسلم الأشعري مولاهم أبو إسماعيل الكوفي الفقيه",
+   "narrator_id": 131,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:25"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "حيان بن عبيد الله أبو زهير",
+   "narrator_id": 132,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:26"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "سليمان بن زياد",
+   "narrator_id": 133,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:41"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "صالح بن أبي الأخضر اليماني مولى هشام بن عبد الملك نزل البصرة",
+   "narrator_id": 134,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:47"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن الحسين أبو أحمد السامري",
+   "narrator_id": 135,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:52"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الله بن يوسف بن بابي",
+   "narrator_id": 136,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:60"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الرحمن بن محمد بن محمد بن الحسن بن هندويه الفارسي أبو الرضا",
+   "narrator_id": 137,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:64"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد الرحيم بن أحمد بن علي بن طلحة الأنصاري السبتي ابن عليم",
+   "narrator_id": 138,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:65"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبد المجيد بن الحسن بن كردوس أبو بكر مولى بني مخزوم المصري المؤدب",
+   "narrator_id": 139,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:68"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عبيد بن عبد الواحد بن شريك البزار",
+   "narrator_id": 140,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:69"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عطاء بن عجلان الحنفي أبو محمد البصري العطار",
+   "narrator_id": 141,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:74"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "علي بن إسماعيل بن حماد البزار أبو الحسن",
+   "narrator_id": 142,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:76"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "عمر بن الحسن أبو الخطاب وأبو الفضل وأبو حفص وأبو علي الداني الكلبي",
+   "narrator_id": 143,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:80"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "الفضل بن الحباب أبو خليفة الجمحي",
+   "narrator_id": 144,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:85"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "الفضل بن محمد بن الفضل أبو القاسم النيسابوري",
+   "narrator_id": 145,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:86"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "القاسم بن عيسى بن إبراهيم الطائي الواسطي",
+   "narrator_id": 146,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:88"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "القاسم بن محمد بن مندة الأصبهاني",
+   "narrator_id": 147,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:89"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "قاسم بن هانئ الأعمى المصري",
+   "narrator_id": 148,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:90"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "قنبر مولى علي",
+   "narrator_id": 149,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:91"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "مجاهد بن سعيد الهمداني",
+   "narrator_id": 150,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:95"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن إبراهيم الجرجاني الكيال",
+   "narrator_id": 151,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:97"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن أحمد بن محمد بن عبد الرحمن المصري",
+   "narrator_id": 152,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:100"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن أحمد بن عثمان أبو الطاهر المديني",
+   "narrator_id": 153,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:101"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن أحمد بن عبد الرحيم أبو سعيد الإيادي",
+   "narrator_id": 154,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:102"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن إسماعيل بن مهران النيسابوري",
+   "narrator_id": 155,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:103"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن الحسين بن علي أبو جعفر الطوسي",
+   "narrator_id": 156,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:104"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن الحسين بن الأعرابي الحافظ",
+   "narrator_id": 157,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:105"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن كثير الصنعاني ثم المصيصي",
+   "narrator_id": 158,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:111"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن محمد بن مواهب أبو العز الخراساني ثم البغدادي",
+   "narrator_id": 159,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:114"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "محمد بن ميمون المروزي أبو حمزة السكري",
+   "narrator_id": 160,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:117"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "موسى بن عبيدة الربذي",
+   "narrator_id": 161,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:120"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "هشام بن إسماعيل بن يحيى بن سليمان بن عبد الرحمن الحنفي ويقال الخزاعي أبو عبد الملك الدمشقي العطار",
+   "narrator_id": 162,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:123"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "يحيى بن إبراهيم بن أبي زيد الأندلسي أبو الحسين بن البيار المقري",
+   "narrator_id": 163,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:126"
+   ]
+  },
+  {
+   "type": "only_in_one_book",
+   "narrator": "يزيد بن ربيعة الرحبي الدمشقي",
+   "narrator_id": 164,
+   "present_in": 25846,
+   "absent_from": 309,
+   "entries": [
+    "foot_addition:128"
+   ]
+  },
+  {
+   "type": "text_discrepancy",
+   "narrator": "سعيد بن إياس أبو مسعود الجريري",
+   "narrator_id": 24,
+   "entry": "25846:main:16",
+   "detail": "النص: 'أبو أحمد بن عدي' (لا أكذب الله سمعنا ... وهو مختلط) والمحقق يصوبه إلى محمد بن أبي عدي (توفي 194) بحسب الكامل؛ وفي الكواكب (309) 'ابن عدى' أيضا. أي أن هذا التلميذ سمع بعد الاختلاط."
+  },
+  {
+   "type": "text_discrepancy",
+   "narrator": "محمد بن الفضل أبو النعمان السدوسي الحافظ عارم",
+   "narrator_id": 52,
+   "entry": "25846:main:41",
+   "detail": "أبو داود: 'استحكم به الاختلاط سنة ست وعشرين ومائتين' في 25846، بينما عارم توفي 224 والكواكب (309) تقول 'سنة ست عشرة': الأرجح خطأ نسخ والصحيح 216."
+  },
+  {
+   "type": "text_discrepancy",
+   "narrator": "سفيان بن عيينة بن أبي عمران واسمه ميمون",
+   "narrator_id": 27,
+   "entry": "25846:main:19",
+   "detail": "النص يقول 'اختلط سنة سبع وستين' والصواب سبع وتسعين (197)؛ القطان مات 198 والكواكب (309) تقول 197."
+  },
+  {
+   "type": "text_discrepancy",
+   "narrator": "عبد الباقي بن قانع أبو الحسين الحافظ مصنف المعجم في الصحابة",
+   "narrator_id": 45,
+   "entry": "25846:main:27",
+   "detail": "وفاة ابن قانع: حاشية المخطوط 'سنة إحدى وثمانين وثلاثمائة' والمعروف 351 (الكواكب: لم تذكر السنة)؛ والمحقق ينبه أن 'ابن الفراء' في المخطوط تصحيف 'ابن الفرات'."
+  },
+  {
+   "type": "text_discrepancy",
+   "narrator": "عبد الله بن لهيعة بن عقبة الحضرمي أبو عبد الرحمن المصري القاضي",
+   "narrator_id": 108,
+   "entry": "309:appendix1:25",
+   "detail": "تعليق المحقق (١): ابن معين نفى احتراق كتب ابن لهيعة ('ليس لهذا أصل، سألت عنها بمصر') وقال: ابن لهيعة ليس بشيء تغير أو لم يتغير؛ ومع ذلك استنبط المحقق أن الثوري وشعبة والأوزاعي وعمرو بن الحارث رووا عنه قبل احتراق كتبه سنة 169. وفي 25846 يروي عثمان بن صالح السهمي أن كتبه لم تحترق كلها."
+  },
+  {
+   "type": "text_discrepancy",
+   "narrator": "محمد بن موسى بن محمد اللخمي الشافعي بن سند الحافظ شمس الدين",
+   "narrator_id": 63,
+   "entry": "309:main:63",
+   "detail": "المؤلف (ابن الكيال) ينبه على أنه حذف مسلم بن كيسان من الباب الرئيسي مع صحة اختلاطه، ثم أضافه المحقق في الملحق الثاني؛ لا يرد في 25846 سوى ملحق (ز) رقم 119."
+  }
+ ]
+}
