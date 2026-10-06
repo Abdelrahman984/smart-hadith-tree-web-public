@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure POST /api/Verify against docs/challenge/verify-eval-cases.json.
+"""Measure POST /api/Verify against docs/challenge/evaluation/verify-eval-cases.json.
 
 Usage:
     python scripts/eval_verify.py                       # API on http://localhost:5147
@@ -20,7 +20,7 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CASES_PATH = ROOT / "docs" / "challenge" / "verify-eval-cases.json"
+CASES_PATH = ROOT / "docs" / "challenge" / "evaluation" / "verify-eval-cases.json"
 STATUSES = {"exact", "variant", "not-found", "invalid"}
 
 

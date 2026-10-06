@@ -4,7 +4,7 @@
 > نافذة التسليم: **الأحد 4 أكتوبر 09:00 → الثلاثاء 6 أكتوبر 2026 11:59 مساءً (توقيت الرياض)**. التسليم بعد الإغلاق غير ممكن.
 > التحكيم الأولي: 7–15 أكتوبر (يُرشَّح حتى 20 مشروعاً) ← النهائي: 19–22 أكتوبر (5 دقائق عرض + 3 أسئلة) ← الحفل 26 أكتوبر.
 
-المصادر في هذا المجلد: `Participant_Guide.pdf` (دليل المشارك)، `Reference_Framework_Scientific_Package_and_Data.pdf` (المرجعية العلمية)، `Presentation_Template_and_User_Guide.pptx` (قالب العرض).
+المصادر في `reference/`: `Participant_Guide.pdf` (دليل المشارك)، `Reference_Framework_Scientific_Package_and_Data.pdf` (المرجعية العلمية)، `Presentation_Template_and_User_Guide.pptx` (قالب العرض).
 
 ---
 

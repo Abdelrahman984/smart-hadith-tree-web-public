@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure /api/Search ranking against docs/challenge/search-eval-cases.json.
+"""Measure /api/Search ranking against docs/challenge/evaluation/search-eval-cases.json.
 
 For every case the runner searches, finds the rank of the hadith the user is looking for (a matn that contains
 'target_contains'), and reports hit@1/3/10 and MRR. With --judge it also runs the opt-in AI check on the page and
@@ -28,7 +28,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CASES_PATH = ROOT / "docs" / "challenge" / "search-eval-cases.json"
+CASES_PATH = ROOT / "docs" / "challenge" / "evaluation" / "search-eval-cases.json"
 LEVEL_ORDER = {"match": 0, "partial": 1, "not-judged": 2, "scattered": 3}
 MARKS = re.compile("[ؐ-ًؚ-ٰٟۖ-ۭـ]")
 

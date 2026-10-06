@@ -55,13 +55,13 @@ The user chooses to use it; it never runs on its own.
 3. **Wire the scorer into `HadithSearchService`** (both paths), add DTO fields, show a bar and the reason on `HadithCard.tsx`. Keep the existing sort tie-breakers.
 4. **AI judge endpoint + tests** with a fake kernel (valid answer; quote not in the matn; index out of range, missing or duplicated; chunking of more than 20 results; timeout; no model; request over 50 ids; rate limit). Measure the real payload size and time for 20 and 50 results with the configured model before choosing the chunk size.
 5. **Search page button, badges and the "hide non-matching" switch with its counter.** Mutation through react-query like the existing search hook; Arabic labels; `AiNotice`; labels are cleared when the page, query or filters change.
-6. **Evaluation set and runner.** `docs/challenge/search-eval-cases.json` (about 20 queries, each with a target identified by a distinctive matn substring so it does not depend on book numbers, plus decoys: long hadiths with the words scattered) and `scripts/eval_search.py` reporting the rank of the target, hit@1/3/10 and MRR for: baseline, Layer A, Layer A + B. Report `modelStatus` and warn when the model did not answer, so a timeout is not read as "the model added nothing".
+6. **Evaluation set and runner.** `docs/challenge/evaluation/search-eval-cases.json` (about 20 queries, each with a target identified by a distinctive matn substring so it does not depend on book numbers, plus decoys: long hadiths with the words scattered) and `scripts/eval_search.py` reporting the rank of the target, hit@1/3/10 and MRR for: baseline, Layer A, Layer A + B. Report `modelStatus` and warn when the model did not answer, so a timeout is not read as "the model added nothing".
 
 ## Files
 
 - Backend: `HadithSearchService.cs` (candidates, scoring wiring), new `RelevanceScorer.cs`, `ApiDtos.cs` (`HadithSearchResultDto`), new `SearchJudgeService.cs` + DTOs, `SearchController.cs` (endpoint), `Program.cs` (registration), `HadithSearchServiceTests.cs` and new tests.
 - Frontend: `features/search/components/HadithCard.tsx`, `app/search/page.tsx`, `lib/api.ts`, `types/api.ts`, reuse `components/AiNotice.tsx`.
-- Eval: `docs/challenge/search-eval-cases.json`, `scripts/eval_search.py`.
+- Eval: `docs/challenge/evaluation/search-eval-cases.json`, `scripts/eval_search.py`.
 
 ## Verification
 
@@ -91,7 +91,7 @@ Built and unit-tested (208 tests pass on Linux, .NET 10 SDK with `DOTNET_ROLL_FO
 | 3. Wiring and card bar | Done: standard and advanced paths return `relevancePercent` and `relevanceReason`; results sort by relevance first, then the old tie-breakers; the card shows a bar and the reason. Not computed for Isnad-only scope or when no word is in the matn |
 | 4. AI judge endpoint | Done: `POST /api/Search/ai-judge`, `SearchJudgeService`, 10 tests with a fake chat model (valid answer, quote not in matn, quote under three words, repeated / missing / out-of-range index, no model, timeout, chunking 20+20+5, cache, invalid input, fenced JSON). Rate limit `RateLimit:AiPermitPerMinute` (default 10 per client address per minute) on this endpoint only |
 | 5. Page button, badges, hide switch | Done (`app/search/page.tsx`, `HadithCard.tsx`): the labels belong to one page of results and disappear when the results change; "not judged" is never hidden; the hide switch is off by default and the hidden count is always shown with a link to show them |
-| 6. Evaluation | `docs/challenge/search-eval-cases.json` (18 queries) and `scripts/eval_search.py`. The list has no scattered-decoy cases yet: only the owner can find long hadiths in the corpus where the words are far apart; add them under `decoys_contains` |
+| 6. Evaluation | `docs/challenge/evaluation/search-eval-cases.json` (18 queries) and `scripts/eval_search.py`. The list has no scattered-decoy cases yet: only the owner can find long hadiths in the corpus where the words are far apart; add them under `decoys_contains` |
 
 ### How to measure (owner)
 

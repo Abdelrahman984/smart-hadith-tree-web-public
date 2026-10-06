@@ -25,7 +25,7 @@ Both together: `scripts/run.ps1`. Restore the full DB from `backups/*.bak` (see 
 
 Data/ETL: `dotnet run --project src/SmartHadithTree.Etl -- data/shamela_rijal` loads the Python resolver's output; `... -- seed-ilal-shamela data/shamela_rijal` loads Ilal data. Docker: `docker-compose.yml` (local) and `docker-compose.prod.yml` + `deploy/` (Caddy, runbook in `deploy/devops-handoff.md`).
 
-Search evaluation (standard-library Python, needs a running API): `python scripts/eval_search.py --dry-run | --save x.json | --judge --review-pack search_review.md | --compare baseline.json`; cases in `docs/challenge/search-eval-cases.json`. `scripts/eval_verify.py` does the same for `/verify`.
+Search evaluation (standard-library Python, needs a running API): `python scripts/eval_search.py --dry-run | --save x.json | --judge --review-pack search_review.md | --compare baseline.json`; cases in `docs/challenge/evaluation/search-eval-cases.json`. `scripts/eval_verify.py` does the same for `/verify`.
 
 ## Architecture
 

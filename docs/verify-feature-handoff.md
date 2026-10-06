@@ -31,7 +31,7 @@ Code decides; the model only advises, within narrow limits.
 | `src/SmartHadithTree.Api/Program.cs` | DI registration (`IHadithVerificationService`) |
 | `src/SmartHadithTree.Tests/Application/HadithVerificationServiceTests.cs` | unit tests |
 | `frontend/src/app/verify/page.tsx`, `frontend/src/lib/api.ts`, `frontend/src/types/api.ts` | UI and client |
-| `docs/challenge/verify-eval-cases.json` | 29 evaluation cases |
+| `docs/challenge/evaluation/verify-eval-cases.json` | 29 evaluation cases |
 | `scripts/eval_verify.py` | evaluation runner |
 
 ## Measured results (owner's machine, 2026-10-05, `--runs 3`)
