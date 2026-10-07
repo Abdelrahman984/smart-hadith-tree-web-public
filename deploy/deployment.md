@@ -60,7 +60,7 @@ Notes from that run:
 - Start `db` first, restore, then start `api` and `web`: `docker compose up -d db`, restore, `docker compose up -d api web`.
   The restore needs `WITH MOVE` to the Linux paths, e.g.
   `MOVE 'SmartHadithTree_ShamelaV7' TO '/var/opt/mssql/data/SmartHadithTree_ShamelaV7.mdf', MOVE 'SmartHadithTree_ShamelaV7_log' TO '/var/opt/mssql/data/SmartHadithTree_ShamelaV7_log.ldf'`
-  (that run used the v5 backup; the logical names there were `SmartHadithTree_ShamelaV5`, so confirm them for v7 with `RESTORE FILELISTONLY`).
+  (that run used the v5 backup, whose logical names were `SmartHadithTree_ShamelaV5`; the v7 backup's names, read with `RESTORE FILELISTONLY`, are the `V7` ones above).
 - The first web build once failed while next/font fetched Google Fonts and passed on retry, so the build needs
   internet access.
 - Not yet checked: AI summaries and Ilal explanations (they need a Together or Gemini key), and `/verify` end to end.
