@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { groupSourcesByCompanion } from '../src/features/isnad-tree/utils/groupSources';
-import type { ComparativeIsnadNodeDto } from '../src/types/api';
+import type { ComparativeIsnadNodeDto, IlalTariqDto } from '../src/types/api';
 
 const src = (hadithId: string) => ({ hadithId, bookName: `book-${hadithId}`, hadithNumber: 1, matnSnippet: '' });
 const node = (id: string, narratorId: string, stepOrder: number, ids: string[], name = narratorId): ComparativeIsnadNodeDto => ({
@@ -42,5 +42,36 @@ test.describe('groupSourcesByCompanion', () => {
 
   test('no sources, no groups', () => {
     expect(groupSourcesByCompanion({ sources: [], nodes: [] })).toEqual({ main: null, turuq: [], shawahid: [] });
+  });
+
+  const tariq = (hadithId: string, companionId: string | null, isShahid: boolean, companionName = companionId ?? ''): IlalTariqDto => ({
+    hadithId, bookName: '', hadithNumber: 1, isMarfu: true, companionId, companionName, isShahid,
+  });
+
+  test('the split the server made wins: a witness is the one it flags, and a chain that stops short stays a route', () => {
+    const g = groupSourcesByCompanion({
+      sources: [src('h1'), src('h2'), src('h3'), src('h4')],
+      nodes: [],
+      ilalReport: {
+        analyzedHadithIds: [], madars: [], findings: [], hasQadihah: false, summaryAr: '',
+        turuq: [tariq('h1', 'ABU-MALIK', false, 'أبو مالك'), tariq('h2', null, false), tariq('h3', 'ALI', true, 'علي'), tariq('h4', 'ABU-MALIK', false, 'أبو مالك')],
+      },
+    });
+    expect(g.main).toEqual({ narratorId: 'ABU-MALIK', name: 'أبو مالك' });
+    expect(g.turuq.map((s) => s.hadithId)).toEqual(['h1', 'h2', 'h4']);
+    expect(g.shawahid.map((w) => [w.source.hadithId, w.companion.name])).toEqual([['h3', 'علي']]);
+  });
+
+  test('a narration with several chains is a witness only when every chain is', () => {
+    const g = groupSourcesByCompanion({
+      sources: [src('h1'), src('h2')],
+      nodes: [],
+      ilalReport: {
+        analyzedHadithIds: [], madars: [], findings: [], hasQadihah: false, summaryAr: '',
+        turuq: [tariq('h1', 'P', false), tariq('h2', 'Q', true), tariq('h2', 'P', false)],
+      },
+    });
+    expect(g.shawahid).toEqual([]);
+    expect(g.turuq.map((s) => s.hadithId)).toEqual(['h1', 'h2']);
   });
 });

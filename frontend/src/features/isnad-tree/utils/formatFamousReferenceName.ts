@@ -1,5 +1,3 @@
-import { formatTwoPartNarratorName } from "./formatNarratorName";
-
 /**
  * Mapping of canonical Hadith books and compilers to their universally recognized famous names.
  */
@@ -63,50 +61,16 @@ const CANONICAL_COMPILERS: Array<{
   { matchKey: "عبد الله بن عبد الرحمن بن الفضل", famousName: "الدارمي", shortName: "الدارمي" },
 ];
 
+/** "للطبراني" is "ل" + "الطبراني" with the alef dropped; restore it so the book title can match a key. */
+function expandLamLam(bookName: string): string {
+  return bookName.replace(/(^|\s)لل/g, "$1ل ال");
+}
+
 /**
- * Resolves the famous reference compiler name (e.g. 'البخاري' instead of 'محمد بن إسماعيل').
+ * The compiler a book is known by (e.g. 'البخاري' for «صحيح البخاري»), taken from the book title alone: the first
+ * narrator of a chain is a narrator, not the compiler. A title with no known compiler is shown as it is.
  */
-export function getFamousReferenceOwnerName(
-  narratorName?: string | null,
-  knownAs?: string | null,
-  bookName?: string | null
-): string {
-  // 1. Check against canonical mappings using bookName first
-  if (bookName) {
-    for (const item of CANONICAL_COMPILERS) {
-      if (bookName.includes(item.matchKey)) {
-        return item.famousName;
-      }
-    }
-  }
-
-  // 2. Check knownAs
-  if (knownAs) {
-    for (const item of CANONICAL_COMPILERS) {
-      if (knownAs.includes(item.matchKey)) {
-        return item.famousName;
-      }
-    }
-    // Clean knownAs if it contains titles like "الإمام البخاري"
-    const cleanedKnown = knownAs.replace(/^(?:الإمام|الشيخ|الحافظ|العلامة)\s+/, "").trim();
-    if (cleanedKnown && !cleanedKnown.includes("بن")) {
-      return cleanedKnown;
-    }
-  }
-
-  // 3. Check narratorName / fullName
-  if (narratorName) {
-    for (const item of CANONICAL_COMPILERS) {
-      if (narratorName.includes(item.matchKey)) {
-        return item.famousName;
-      }
-    }
-  }
-
-  // 4. Fallback: if knownAs exists, use it; otherwise use formatTwoPartNarratorName
-  if (knownAs && knownAs.trim()) {
-    return knownAs.trim();
-  }
-
-  return formatTwoPartNarratorName(narratorName);
+export function getFamousReferenceOwnerName(bookName: string): string {
+  const book = expandLamLam(bookName);
+  return CANONICAL_COMPILERS.find((item) => book.includes(item.matchKey))?.famousName ?? bookName;
 }

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { buildComparativeGraph, buildSingleGraph } from '../src/features/isnad-tree/utils/buildIsnadGraph';
+import { getFamousReferenceOwnerName } from '../src/features/isnad-tree/utils/formatFamousReferenceName';
 import { decorateEdgeWithIlal } from '../src/features/isnad-tree/utils/edgeStyle';
 import { getIlalEdgeDecorations } from '../src/features/ilal/utils/ilalLabels';
 import { normalizeArabic, searchNarrators } from '../src/features/isnad-tree/utils/narratorSearch';
@@ -30,12 +31,14 @@ const chain: IsnadNodeDto[] = [
 test.describe('buildSingleGraph', () => {
   const graph = buildSingleGraph({ hadithId: 'h', bookName: 'صحيح البخاري', hadithNumber: 1, matnArabic: '', nodes: chain });
 
-  test('step 0 is the compiler card, everyone else a narrator card', () => {
+  test('every chain narrator is a narrator card; the book gets its own source card', () => {
     expect(graph.nodes.map((n) => [n.id, n.type])).toEqual([
-      ['C', 'reference'],
+      ['C', 'narrator'],
+      ['ref-صحيح البخاري', 'reference'],
       ['N1', 'narrator'],
       ['N2', 'narrator'],
     ]);
+    expect((graph.nodes.find((n) => n.id === 'ref-صحيح البخاري')!.data as { famousName: string }).famousName).toBe('البخاري');
     expect(graph.bookNames).toEqual(['صحيح البخاري']);
   });
 
@@ -43,11 +46,12 @@ test.describe('buildSingleGraph', () => {
     expect(graph.edges.map((e) => [e.source, e.target])).toEqual([
       ['N1', 'C'],
       ['N2', 'N1'],
+      ['C', 'ref-صحيح البخاري'],
     ]);
   });
 
   test('a broken link is red, dashed and labelled; a normal one is grey', () => {
-    const [normal, broken] = graph.edges;
+    const [normal, broken] = graph.edges; // the source edge comes last
     expect(normal.style?.stroke).toBe('#64748b');
     expect(normal.label).toBeUndefined();
     expect(broken.style?.stroke).toBe('#ef4444');
@@ -62,6 +66,61 @@ test.describe('buildSingleGraph', () => {
     });
     expect(g.edges).toHaveLength(0);
     expect(g.nodes).toHaveLength(1);
+    expect(g.nodes[0].type).toBe('narrator');
+  });
+});
+
+test.describe('a first narrator who is the compiler himself', () => {
+  const BUKHARI = 'محمد بن إسماعيل بن إبراهيم بن المغيرة ابن بذدزبة';
+  const compilerChain: IsnadNodeDto[] = [
+    node({ id: 't0', narratorId: 'B', stepOrder: 0, parentNodeId: null, narratorName: BUKHARI }),
+    node({ id: 't1', narratorId: 'N1', stepOrder: 1, parentNodeId: 't0' }),
+  ];
+
+  test('is not drawn as a narrator: the source card stands in his place, the students link to it', () => {
+    const g = buildSingleGraph({ hadithId: 'h', bookName: 'صحيح البخاري', hadithNumber: 1, matnArabic: '', nodes: compilerChain });
+    expect(g.nodes.map((n) => [n.id, n.type])).toEqual([['ref-صحيح البخاري', 'reference'], ['N1', 'narrator']]);
+    expect(g.edges.map((e) => [e.source, e.target])).toEqual([['N1', 'ref-صحيح البخاري']]);
+  });
+
+  test('the same name in another book is only a narrator', () => {
+    const g = buildSingleGraph({ hadithId: 'h', bookName: 'صحيح مسلم', hadithNumber: 1, matnArabic: '', nodes: compilerChain });
+    expect(g.nodes.map((n) => [n.id, n.type])).toEqual([['B', 'narrator'], ['ref-صحيح مسلم', 'reference'], ['N1', 'narrator']]);
+  });
+
+  test('comparative: one source card for the compiler and for a first narrator who is only his sheikh', () => {
+    const sources = [
+      { hadithId: 'h1', bookName: 'صحيح البخاري', hadithNumber: 1, matnSnippet: '' },
+      { hadithId: 'h2', bookName: 'صحيح البخاري', hadithNumber: 2, matnSnippet: '' },
+    ];
+    const g = buildComparativeGraph({
+      sources,
+      nodes: [
+        cnode({ id: 'a0', narratorId: 'B', stepOrder: 0, parentNodeId: null, narratorName: BUKHARI, sourceHadithIds: ['h1'], sourceBooks: ['صحيح البخاري'] }),
+        cnode({ id: 'a1', narratorId: 'N1', stepOrder: 1, parentNodeId: 'a0', sourceBooks: ['صحيح البخاري'] }),
+        cnode({ id: 'b0', narratorId: 'S', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h2'], sourceBooks: ['صحيح البخاري'] }),
+      ],
+    } as ComparativeTreeResponseDto);
+    expect(g.nodes.map((n) => [n.id, n.type]).sort()).toEqual([['N1', 'narrator'], ['S', 'narrator'], ['ref-صحيح البخاري', 'reference']]);
+    expect(g.edges.map((e) => [e.source, e.target]).sort()).toEqual([['N1', 'ref-صحيح البخاري'], ['S', 'ref-صحيح البخاري']]);
+    expect((g.nodes.find((n) => n.type === 'reference')!.data as { hadithNumber: string }).hadithNumber).toBe('1, 2');
+  });
+
+  test('a compiler who is also an intermediate sheikh in another book keeps his narrator card there', () => {
+    const sources = [
+      { hadithId: 'h1', bookName: 'صحيح البخاري', hadithNumber: 1, matnSnippet: '' },
+      { hadithId: 'h2', bookName: 'صحيح مسلم', hadithNumber: 2, matnSnippet: '' },
+    ];
+    const g = buildComparativeGraph({
+      sources,
+      nodes: [
+        cnode({ id: 'a0', narratorId: 'B', stepOrder: 0, parentNodeId: null, narratorName: BUKHARI, sourceHadithIds: ['h1'], sourceBooks: ['صحيح البخاري'] }),
+        cnode({ id: 'b0', narratorId: 'M', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h2'], sourceBooks: ['صحيح مسلم'] }),
+        cnode({ id: 'b1', narratorId: 'B', stepOrder: 1, parentNodeId: 'b0', narratorName: BUKHARI, sourceBooks: ['صحيح مسلم'] }),
+      ],
+    } as ComparativeTreeResponseDto);
+    expect(g.nodes.find((n) => n.id === 'B')!.type).toBe('narrator');
+    expect(g.edges.map((e) => [e.source, e.target]).sort()).toEqual([['B', 'M'], ['M', 'ref-صحيح مسلم']]);
   });
 });
 
@@ -80,8 +139,9 @@ test.describe('buildComparativeGraph', () => {
       cnode({ id: 'b0', narratorId: 'C', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h2'], sourceBooks: ['صحيح مسلم'] }),
       cnode({ id: 'b1', narratorId: 'N1', stepOrder: 1, parentNodeId: 'b0', sourceBooks: ['صحيح مسلم'] }),
     ]);
-    expect(g.nodes).toHaveLength(2);
-    expect(g.edges).toHaveLength(1);
+    expect(g.nodes.filter((n) => n.type === 'narrator')).toHaveLength(2);
+    expect(g.nodes.filter((n) => n.type === 'reference')).toHaveLength(2); // one source card per book
+    expect(g.edges).toHaveLength(3); // C → N1 shared, plus one source edge per book
     expect(g.edges[0].data?.books).toEqual(['صحيح البخاري', 'صحيح مسلم']);
     expect(g.bookNames).toEqual(['صحيح البخاري', 'صحيح مسلم']);
     // Shared by two books: dark and thick.
@@ -114,14 +174,43 @@ test.describe('buildComparativeGraph', () => {
     expect([y.style?.stroke, y.label]).toEqual(['#f59e0b', 'اختلاف باللفظ']);
   });
 
-  test('a compiler who is also an intermediate sheikh stays a compiler card', () => {
+  test('a first narrator who is also an intermediate sheikh stays one narrator card, with a source card under the first', () => {
     const g = build([
       cnode({ id: 'a0', narratorId: 'C', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h1'], sourceBooks: ['صحيح البخاري'] }),
       cnode({ id: 'b0', narratorId: 'D', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h2'], sourceBooks: ['صحيح مسلم'] }),
       cnode({ id: 'b1', narratorId: 'C', stepOrder: 1, parentNodeId: 'b0', sourceBooks: ['صحيح مسلم'] }),
     ]);
-    expect(g.nodes.find((n) => n.id === 'C')!.type).toBe('reference');
-    expect(g.edges.map((e) => [e.source, e.target])).toEqual([['C', 'D']]);
+    expect(g.nodes.find((n) => n.id === 'C')!.type).toBe('narrator');
+    expect(g.edges.map((e) => [e.source, e.target])).toEqual([
+      ['C', 'D'],
+      ['C', 'ref-صحيح البخاري'],
+      ['D', 'ref-صحيح مسلم'],
+    ]);
+  });
+
+  test('two different narrators with the same short name are told apart by their grandfather', () => {
+    const g = build([
+      cnode({ id: 'a0', narratorId: 'C', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h1'] }),
+      cnode({ id: 'a1', narratorId: 'Y1', stepOrder: 1, parentNodeId: 'a0', narratorName: 'يحيى بن سعيد بن قيس بن عمرو الأنصاري' }),
+      cnode({ id: 'a2', narratorId: 'Y2', stepOrder: 1, parentNodeId: 'a0', narratorName: 'يحيى بن سعيد بن فروخ القطان' }),
+      cnode({ id: 'a3', narratorId: 'Z', stepOrder: 1, parentNodeId: 'a0', narratorName: 'سفيان بن عيينة بن أبي عمران' }),
+    ]);
+    const name = (id: string) => (g.nodes.find((n) => n.id === id)!.data as { narratorName: string }).narratorName;
+    expect([name('Y1'), name('Y2'), name('Z')]).toEqual(['يحيى بن سعيد بن قيس', 'يحيى بن سعيد بن فروخ', 'سفيان بن عيينة']);
+  });
+
+  test('a book has one source card, whatever the number of its hadiths and chains, linked to each first narrator', () => {
+    const more = [...sources, { hadithId: 'h3', bookName: 'صحيح البخاري', hadithNumber: 3, matnSnippet: '' }];
+    const g = buildComparativeGraph({
+      sources: more,
+      nodes: [
+        cnode({ id: 'a0', narratorId: 'C', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h1'], sourceBooks: ['صحيح البخاري'] }),
+        cnode({ id: 'b0', narratorId: 'D', stepOrder: 0, parentNodeId: null, sourceHadithIds: ['h1', 'h3'], sourceBooks: ['صحيح البخاري'] }),
+      ],
+    } as ComparativeTreeResponseDto);
+    const refs = g.nodes.filter((n) => n.type === 'reference');
+    expect(refs.map((n) => [n.id, (n.data as { hadithNumber: string }).hadithNumber])).toEqual([['ref-صحيح البخاري', '1, 3']]);
+    expect(g.edges.map((e) => [e.source, e.target])).toEqual([['C', 'ref-صحيح البخاري'], ['D', 'ref-صحيح البخاري']]);
   });
 
   test('variation and travel hints seen on a later transmission are kept on the card', () => {
@@ -132,6 +221,13 @@ test.describe('buildComparativeGraph', () => {
     ]);
     const data = g.nodes.find((n) => n.id === 'N')!.data as { hasMatnVariation?: boolean; matnVariationSnippet?: string; travelNote?: string };
     expect([data.hasMatnVariation, data.matnVariationSnippet, data.travelNote]).toEqual([true, 's', 't']);
+  });
+});
+
+test.describe('source card names', () => {
+  test('named after the compiler in the book title, never after the first narrator', () => {
+    const names = ['المعجم الأوسط للطبراني', 'السنن الكبرى للبيهقي', 'صحيح البخاري', 'كتاب غير معروف'].map(getFamousReferenceOwnerName);
+    expect(names).toEqual(['الطبراني', 'البيهقي', 'البخاري', 'كتاب غير معروف']);
   });
 });
 
@@ -157,7 +253,7 @@ test.describe('decorateEdgeWithIlal', () => {
 test.describe('edge kinds', () => {
   test('each marker kind follows the rule that styled the edge', () => {
     const g = buildSingleGraph({ hadithId: 'h', bookName: 'b', hadithNumber: 1, matnArabic: '', nodes: chain });
-    expect(g.edges.map((e) => e.data?.kind)).toEqual([undefined, 'anomaly']);
+    expect(g.edges.map((e) => e.data?.kind)).toEqual([undefined, 'anomaly', undefined]);
     expect(decorateEdgeWithIlal(g.edges[0], { label: 'x', color: '#000', dash: '1' }).data?.kind).toBe('ilal');
     // A broken link keeps its own kind when a finding lands on it.
     expect(decorateEdgeWithIlal(g.edges[1], { label: 'x', color: '#000', dash: '1' }).data?.kind).toBe('anomaly');

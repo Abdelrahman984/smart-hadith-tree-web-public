@@ -1,4 +1,4 @@
-import type { ComparativeHadithSourceDto, ComparativeIsnadNodeDto, ComparativeTreeResponseDto } from "@/types/api";
+import type { ComparativeHadithSourceDto, ComparativeIsnadNodeDto, ComparativeTreeResponseDto, IlalTariqDto } from "@/types/api";
 
 export interface CompanionRef {
   narratorId: string;
@@ -29,11 +29,40 @@ function companionOf(hadithId: string, nodes: ComparativeIsnadNodeDto[]): Compan
   return { narratorId: node.narratorId, name: node.knownAs || node.narratorName };
 }
 
+/** The split the server already made (`IlalTariqDto.isShahid`): the same one its findings and madars were computed on. */
+function groupByServer(sources: ComparativeHadithSourceDto[], turuq: IlalTariqDto[]): SourceGroups {
+  const turuqOf = new Map<string, IlalTariqDto[]>();
+  for (const t of turuq) turuqOf.set(t.hadithId, [...(turuqOf.get(t.hadithId) ?? []), t]);
+
+  const companionOfSource = (hadithId: string): CompanionRef | null => {
+    const withCompanion = turuqOf.get(hadithId)?.find((t) => t.companionId);
+    return withCompanion?.companionId ? { narratorId: withCompanion.companionId, name: withCompanion.companionName ?? "" } : null;
+  };
+
+  const routes: ComparativeHadithSourceDto[] = [];
+  const shawahid: SourceGroups["shawahid"] = [];
+  for (const source of sources) {
+    const entries = turuqOf.get(source.hadithId) ?? [];
+    const companion = companionOfSource(source.hadithId);
+    if (entries.length > 0 && entries.every((t) => t.isShahid) && companion) shawahid.push({ source, companion });
+    else routes.push(source);
+  }
+  // The main Companion is the one the first route that reaches a Companion ends at.
+  const main = routes.map((s) => companionOfSource(s.hadithId)).find((c) => c !== null) ?? null;
+  return { main, turuq: routes, shawahid };
+}
+
 /**
  * Splits the compared narrations into routes of one hadith (turuq) and witnesses (shawahid, through another Companion).
- * It is a display aid: the tree and the Ilal findings still treat every narration as a route (backlog §3).
+ * The server decides (a chain that stops short of a Companion is still a route); without its answer, e.g. an older
+ * API, the Companion is read from the top of each chain in the tree.
  */
-export function groupSourcesByCompanion(tree: Pick<ComparativeTreeResponseDto, "sources" | "nodes">): SourceGroups {
+export function groupSourcesByCompanion(
+  tree: Pick<ComparativeTreeResponseDto, "sources" | "nodes"> & { ilalReport?: ComparativeTreeResponseDto["ilalReport"] }
+): SourceGroups {
+  const serverTuruq = tree.ilalReport?.turuq;
+  if (serverTuruq?.some((t) => t.isShahid !== undefined)) return groupByServer(tree.sources, serverTuruq);
+
   const companions = new Map(tree.sources.map((s) => [s.hadithId, companionOf(s.hadithId, tree.nodes)] as const));
 
   const counts = new Map<string, number>();

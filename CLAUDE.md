@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Backend (repo root, .NET 9, SQL Server on `.`; default DB `SmartHadithTree_ShamelaV5`):
+Backend (repo root, .NET 9, SQL Server on `.`; default DB `SmartHadithTree_ShamelaV7`):
 ```powershell
 dotnet build SmartHadithTree.sln
 dotnet run --project src/SmartHadithTree.Api            # http://localhost:5147

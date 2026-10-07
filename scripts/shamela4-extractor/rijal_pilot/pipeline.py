@@ -141,7 +141,7 @@ def build_registry(ns, out_dir):
             'id': ids[i], 'name': re.split(r'[،.]', header, maxsplit=1)[0].strip(), 'header': header,
             'source': src, 'symbols': e['symbols'],
             'verdict': verdict, 'rank': rk, 'tabaqa': tabaqa, 'death': death,
-            'kunyas': sorted(kunyas[i]), 'aliases': e.get('aliases') or [],
+            'kunyas': sorted(kunyas[i]), 'aliases': e.get('aliases') or [], 'merged_ids': e.get('merged_ids') or [],
             'shuyukh': sorted(ids[j] for j in strict(i, e['shuyukh'], talamidh_of)),
             'talamidh': sorted(ids[j] for j in strict(i, e['talamidh'], shuyukh_of)),
             'shuyukh_raw': e['shuyukh'], 'talamidh_raw': e['talamidh'], 'quotes': e['quotes'],

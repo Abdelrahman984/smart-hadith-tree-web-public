@@ -18,14 +18,25 @@ public class TaqwiyahService : ITaqwiyahService
     /// <summary>
     /// Grades the hadith from its routes (turuq). Each route is as strong as its weakest narrator
     /// above the compiler; routes that share the same weakest narrator are one weakness, not two.
+    /// A narrator with no grade is no verdict: a route through one is judged only when the graded ones already
+    /// make it weak, otherwise it is left out, and a hadith none of whose routes can be judged is «غير محرر».
     /// </summary>
     private static void CalculateStructuralStrength(ComparativeTreeResponseDto tree)
     {
-        var routes = tree.IlalReport?.Turuq.Where(t => t.WeakestTier.HasValue).ToList() ?? [];
+        var all = tree.IlalReport?.Turuq ?? [];
+        var routes = all.Where(t => t.WeakestTier.HasValue && (t.UnratedNarratorCount == 0 || t.WeakestTier >= 6)).ToList();
         var pathStrengths = routes.Select(r => r.WeakestTier!.Value).ToList();
+        var undetermined = all.Count(t => t.UnratedNarratorCount > 0 && !(t.WeakestTier >= 6));
 
         if (pathStrengths.Count == 0)
         {
+            if (undetermined > 0)
+            {
+                tree.CalculatedGrade = "غير محرر";
+                tree.TaqwiyahDetails = $"تعذّر الحكم: في كل الطرق ({undetermined}) رواة لم تُحرَّر أحوالهم في الكتب المعتمدة.";
+                return;
+            }
+
             tree.CalculatedGrade = "مجهول";
             tree.TaqwiyahDetails = "تعذّر تحديد رجال الأسانيد.";
             return;
@@ -62,12 +73,22 @@ public class TaqwiyahService : ITaqwiyahService
                 tree.CalculatedGrade = "ضعيف";
                 tree.TaqwiyahDetails = "إسناد ضعيف ولم يوجد ما يجبره.";
             }
+
+            // The weakness is of the judged routes; the others may be sound, so do not call the hadith weak.
+            if (undetermined > 0)
+            {
+                tree.CalculatedGrade = "غير محرر";
+                tree.TaqwiyahDetails = $"الطرق المحررة ضعيفة، وفي {undetermined} طرق أخرى رواة لم تُحرَّر أحوالهم فلا يُجزم بضعف الحديث.";
+            }
         }
         else if (bestPath > 8)
         {
             tree.CalculatedGrade = "موضوع / متروك";
             tree.TaqwiyahDetails = "الحديث شديد الضعف أو موضوع، لا ينجبر بتعدد الطرق.";
         }
+
+        if (undetermined > 0 && tree.CalculatedGrade is "صحيح" or "حسن")
+            tree.TaqwiyahDetails += $" ولم تدخل في الحكم {undetermined} طرق فيها رواة لم تُحرَّر أحوالهم.";
     }
 
     /// <summary>

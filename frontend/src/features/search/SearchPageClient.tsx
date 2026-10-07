@@ -227,7 +227,7 @@ function SearchContent() {
             ابحث وخرّج الأحاديث النبوية
           </h1>
           <p className="text-xs sm:text-sm text-ink-subtle max-w-xl mx-auto font-arabic leading-relaxed">
-            ابحث في المتون والرواة، وحدد الروايات من مختلف كتب السنة لرسم شجرة التخريج المقارنة وبيان مدار الإسناد.
+            ابحث في متون الأحاديث، وحدد الروايات من مختلف كتب السنة لرسم شجرة التخريج المقارنة وبيان مدار الإسناد.
           </p>
         </section>
 
@@ -253,7 +253,7 @@ function SearchContent() {
               type="text"
               dir="rtl"
               className="block w-full py-4 ps-12 pe-28 text-base md:text-lg text-slate-900 placeholder:text-slate-400 bg-surface border-2 border-line/90 rounded-2xl shadow-sm hover:border-slate-300 focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15 outline-none transition-all duration-200"
-              placeholder="ابحث بمتن الحديث، اسم الراوي، أو المصدر..."
+              placeholder="ابحث بمتن الحديث..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               enterKeyHint="search"

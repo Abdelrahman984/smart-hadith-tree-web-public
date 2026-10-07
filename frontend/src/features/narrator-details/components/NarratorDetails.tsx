@@ -1,17 +1,26 @@
 "use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { API_BASE, getNarratorDetails } from '@/lib/api';
-import { useNarratorDrawerStore } from '../store/useNarratorDrawerStore';
-import { Sparkles, AlertCircle, AlertTriangle, MapPin } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
-import AiNotice from '@/components/AiNotice';
-import GlossaryTerm from '@/features/glossary/GlossaryTerm';
-import ConsensusBanner from './ConsensusBanner';
-import EvidenceBadge from '@/components/EvidenceBadge';
-import { getGradeStyle, getVerdictAr, UNRATED_HINT, UNRATED_STYLE } from '../utils/gradeStyle';
-import { analyzeEvaluations, narratorEvidence, type EvaluationGroup } from '../utils/evaluationConsensus';
+import { useQuery } from "@tanstack/react-query";
+import { API_BASE, getNarratorDetails } from "@/lib/api";
+import { useNarratorDrawerStore } from "../store/useNarratorDrawerStore";
+import { Sparkles, AlertCircle, AlertTriangle, MapPin } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import AiNotice from "@/components/AiNotice";
+import GlossaryTerm from "@/features/glossary/GlossaryTerm";
+import ConsensusBanner from "./ConsensusBanner";
+import EvidenceBadge from "@/components/EvidenceBadge";
+import {
+  getGradeStyle,
+  getVerdictAr,
+  UNRATED_HINT,
+  UNRATED_STYLE,
+} from "../utils/gradeStyle";
+import {
+  analyzeEvaluations,
+  narratorEvidence,
+  type EvaluationGroup,
+} from "../utils/evaluationConsensus";
 
 const SCHOLAR_AR: Record<string, string> = {
   jarh: "ابن أبي حاتم (الجرح والتعديل)",
@@ -42,18 +51,30 @@ const CAMP_HEADING: Record<EvaluationGroup["camp"], string> = {
   unclassified: "أقوال غير مصنَّفة",
 };
 
-function EvaluationCard({ evalRecord }: { evalRecord: { scholarName: string; verdictRating: string | null; evaluationText: string } }) {
+function EvaluationCard({
+  evalRecord,
+}: {
+  evalRecord: {
+    scholarName: string;
+    verdictRating: string | null;
+    evaluationText: string;
+  };
+}) {
   return (
     <div className="bg-surface-muted p-3 rounded border border-slate-100">
       <div className="flex justify-between items-start mb-1">
-        <span className="font-semibold text-brand-teal-ink text-sm">{getScholarAr(evalRecord.scholarName)}</span>
+        <span className="font-semibold text-brand-teal-ink text-sm">
+          {getScholarAr(evalRecord.scholarName)}
+        </span>
         {evalRecord.verdictRating && (
           <span className="text-xs px-1.5 py-0.5 bg-surface border border-line rounded text-ink-muted">
             {getVerdictAr(evalRecord.verdictRating)}
           </span>
         )}
       </div>
-      <p className="text-slate-700 text-sm italic">&quot;{evalRecord.evaluationText}&quot;</p>
+      <p className="text-slate-700 text-sm italic">
+        &quot;{evalRecord.evaluationText}&quot;
+      </p>
     </div>
   );
 }
@@ -72,14 +93,22 @@ interface ExtractedAiEvaluation {
  * the narrator id so the AI summary state starts fresh for each narrator.
  */
 export default function NarratorDetails() {
-  const selectedNarratorId = useNarratorDrawerStore((s) => s.selectedNarratorId);
+  const selectedNarratorId = useNarratorDrawerStore(
+    (s) => s.selectedNarratorId,
+  );
   const nodeContext = useNarratorDrawerStore((s) => s.nodeContext);
   const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiSummary, setAiSummary] = useState<ExtractedAiEvaluation | null>(null);
+  const [aiSummary, setAiSummary] = useState<ExtractedAiEvaluation | null>(
+    null,
+  );
   const [aiError, setAiError] = useState<string | null>(null);
 
-  const { data: narrator, isLoading, isError } = useQuery({
-    queryKey: ['narrator', selectedNarratorId],
+  const {
+    data: narrator,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["narrator", selectedNarratorId],
     queryFn: () => getNarratorDetails(selectedNarratorId!),
     enabled: !!selectedNarratorId,
   });
@@ -89,8 +118,13 @@ export default function NarratorDetails() {
     setIsAiLoading(true);
     setAiError(null);
     try {
-      const res = await fetch(`${API_BASE}/Narrators/${selectedNarratorId}/ai-summary`);
-      if (!res.ok) throw new Error("فشل استخراج البيانات. حاول لاحقاً أو راجع أقوال العلماء الأصلية.");
+      const res = await fetch(
+        `${API_BASE}/Narrators/${selectedNarratorId}/ai-summary`,
+      );
+      if (!res.ok)
+        throw new Error(
+          "فشل استخراج البيانات. حاول لاحقاً أو راجع أقوال العلماء الأصلية.",
+        );
       const data = await res.json();
       setAiSummary(data);
     } catch (err) {
@@ -105,7 +139,10 @@ export default function NarratorDetails() {
   };
 
   const consensus = narrator ? analyzeEvaluations(narrator.evaluations) : null;
-  const evidence = narrator && consensus ? narratorEvidence(consensus, narrator.evaluations.length) : null;
+  const evidence =
+    narrator && consensus
+      ? narratorEvidence(consensus, narrator.evaluations.length)
+      : null;
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-6">
@@ -114,7 +151,12 @@ export default function NarratorDetails() {
           {nodeContext.anomalyReason && (
             <p className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-              <span><span className="font-bold">تنبيه على هذا الموضع من السند: </span>{nodeContext.anomalyReason}</span>
+              <span>
+                <span className="font-bold">
+                  تنبيه على هذا الموضع من السند:{" "}
+                </span>
+                {nodeContext.anomalyReason}
+              </span>
             </p>
           )}
           {nodeContext.travelNote && (
@@ -133,7 +175,10 @@ export default function NarratorDetails() {
           <div className="h-20 bg-slate-200 rounded"></div>
         </div>
       ) : isError || !narrator ? (
-        <p role="alert" className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800">
+        <p
+          role="alert"
+          className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800"
+        >
           <AlertCircle className="h-4 w-4 shrink-0" aria-hidden />
           تعذر تحميل بيانات الراوي. أغلق اللوحة وأعد المحاولة.
         </p>
@@ -141,13 +186,15 @@ export default function NarratorDetails() {
         <>
           {/* Header Info */}
           <div>
-            <h3 className="text-2xl font-bold text-brand-dark mb-1">
+            <h3 className="text-l font-bold text-brand-dark mb-1">
               {narrator.knownAs || narrator.fullName}
             </h3>
             {narrator.knownAs && (
-              <p className="text-sm text-ink-subtle mb-2">{narrator.fullName}</p>
+              <p className="text-sm text-ink-subtle mb-2">
+                {narrator.fullName}
+              </p>
             )}
-            
+
             <div className="flex gap-2 flex-wrap mt-3">
               {narrator.generationTier && (
                 <span className="px-2 py-1 bg-brand-blue/10 text-brand-blue rounded text-xs font-semibold">
@@ -155,7 +202,9 @@ export default function NarratorDetails() {
                 </span>
               )}
               {narrator.gradeEn && getGradeStyle(narrator.gradeEn) ? (
-                <span className={`px-2 py-1 rounded border text-xs font-semibold ${getGradeStyle(narrator.gradeEn)!.badgeClass}`}>
+                <span
+                  className={`px-2 py-1 rounded border text-xs font-semibold ${getGradeStyle(narrator.gradeEn)!.badgeClass}`}
+                >
                   {getVerdictAr(narrator.gradeEn)}
                 </span>
               ) : (
@@ -197,69 +246,88 @@ export default function NarratorDetails() {
           {/* Geography & Schools of Hadith */}
           {(narrator.residencePlaces || narrator.deathPlace) && (
             <div className="bg-surface-muted rounded-xl p-3.5 border border-line space-y-2">
-              <h4 className="text-sm font-bold text-ink">🌍 البلدان والرحلة العلمية</h4>
+              <h4 className="text-sm font-bold text-ink">
+                🌍 البلدان والرحلة العلمية
+              </h4>
               {narrator.residencePlaces && (
                 <div>
-                  <span className="text-xs text-ink-subtle block mb-1">بلدان الإقامة والرحلة:</span>
+                  <span className="text-xs text-ink-subtle block mb-1">
+                    بلدان الإقامة والرحلة:
+                  </span>
                   <div className="flex flex-wrap gap-1.5">
-                    {narrator.residencePlaces.split(/[،,-]/).map((city, idx) => {
-                      const trimmed = city.trim();
-                      if (!trimmed) return null;
-                      return (
-                        <span
-                          key={idx}
-                          className="px-2 py-0.5 bg-surface border border-line rounded-full text-xs text-slate-700 font-medium shadow-2xs"
-                        >
-                          📍 {trimmed}
-                        </span>
-                      );
-                    })}
+                    {narrator.residencePlaces
+                      .split(/[،,-]/)
+                      .map((city, idx) => {
+                        const trimmed = city.trim();
+                        if (!trimmed) return null;
+                        return (
+                          <span
+                            key={idx}
+                            className="px-2 py-0.5 bg-surface border border-line rounded-full text-xs text-slate-700 font-medium shadow-2xs"
+                          >
+                            📍 {trimmed}
+                          </span>
+                        );
+                      })}
                   </div>
                 </div>
               )}
               {narrator.deathPlace && (
                 <div className="text-xs text-ink-muted pt-1 border-t border-line/70">
                   <span className="text-ink-subtle">بلد الوفاة: </span>
-                  <span className="font-semibold text-ink">{narrator.deathPlace}</span>
+                  <span className="font-semibold text-ink">
+                    {narrator.deathPlace}
+                  </span>
                 </div>
               )}
             </div>
           )}
 
           {/* Narration Volume & Tafarrud Indicator */}
-          {(narrator.uniqueHadithCount != null || narrator.totalNarrationsCount != null) && (
+          {(narrator.uniqueHadithCount != null ||
+            narrator.totalNarrationsCount != null) && (
             <div className="bg-blue-50/60 rounded-xl p-3.5 border border-blue-100 space-y-2">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-ink">📊 إحصائيات المرويات (جوامع الكلم)</h4>
+                <h4 className="text-sm font-bold text-ink">
+                  📊 إحصائيات المرويات (جوامع الكلم)
+                </h4>
                 {narrator.uniqueHadithCount != null && (
                   <span
                     className={`px-2 py-0.5 text-xs font-bold rounded-full ${
                       narrator.uniqueHadithCount <= 5
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                        ? "bg-amber-100 text-amber-800 border border-amber-300"
                         : narrator.uniqueHadithCount >= 500
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                          : 'bg-blue-100 text-blue-800 border border-blue-200'
+                          ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                          : "bg-blue-100 text-blue-800 border border-blue-200"
                     }`}
                   >
                     {narrator.uniqueHadithCount <= 5
-                      ? 'راوٍ مُقِلّ (يُحذر من تفرده)'
+                      ? "راوٍ مُقِلّ (يُحذر من تفرده)"
                       : narrator.uniqueHadithCount >= 500
-                        ? 'إمام حافظ مُكثِر'
-                        : 'متوسط الرواية'}
+                        ? "إمام حافظ مُكثِر"
+                        : "متوسط الرواية"}
                   </span>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 {narrator.uniqueHadithCount != null && (
                   <div className="bg-surface p-2.5 rounded-lg border border-blue-100 text-center">
-                    <div className="text-lg font-bold text-brand-dark">{narrator.uniqueHadithCount.toLocaleString('ar-EG')}</div>
-                    <div className="text-[11px] text-ink-subtle">أطراف الأحاديث الفريدة</div>
+                    <div className="text-lg font-bold text-brand-dark">
+                      {narrator.uniqueHadithCount.toLocaleString("ar-EG")}
+                    </div>
+                    <div className="text-[11px] text-ink-subtle">
+                      أطراف الأحاديث الفريدة
+                    </div>
                   </div>
                 )}
                 {narrator.totalNarrationsCount != null && (
                   <div className="bg-surface p-2.5 rounded-lg border border-blue-100 text-center">
-                    <div className="text-lg font-bold text-brand-blue">{narrator.totalNarrationsCount.toLocaleString('ar-EG')}</div>
-                    <div className="text-[11px] text-ink-subtle">إجمالي الأسانيد والطرق</div>
+                    <div className="text-lg font-bold text-brand-blue">
+                      {narrator.totalNarrationsCount.toLocaleString("ar-EG")}
+                    </div>
+                    <div className="text-[11px] text-ink-subtle">
+                      إجمالي الأسانيد والطرق
+                    </div>
                   </div>
                 )}
               </div>
@@ -269,7 +337,9 @@ export default function NarratorDetails() {
           {/* Bio */}
           {narrator.biography && (
             <div>
-              <h4 className="text-lg font-semibold text-ink mb-2">ترجمة الراوي</h4>
+              <h4 className="text-lg font-semibold text-ink mb-2">
+                ترجمة الراوي
+              </h4>
               <p className="text-ink-muted text-sm leading-relaxed whitespace-pre-wrap">
                 {narrator.biography}
               </p>
@@ -278,7 +348,9 @@ export default function NarratorDetails() {
 
           {evidence && (
             <div className="flex flex-wrap items-center gap-2 rounded-lg border border-line bg-surface p-2.5">
-              <span className="text-xs font-semibold text-ink-muted">حالة الدليل لحال الراوي:</span>
+              <span className="text-xs font-semibold text-ink-muted">
+                حالة الدليل لحال الراوي:
+              </span>
               <EvidenceBadge status={evidence.status} />
               <span className="text-xs text-ink-muted">{evidence.reason}</span>
             </div>
@@ -289,11 +361,13 @@ export default function NarratorDetails() {
             <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="w-5 h-5 text-purple-600" />
-                <h4 className="text-purple-900 font-bold">الاستخراج الذكي (AI)</h4>
+                <h4 className="text-purple-900 font-bold">
+                  الاستخراج الذكي (AI)
+                </h4>
               </div>
-              
+
               {!aiSummary && !isAiLoading && !aiError && (
-                <button 
+                <button
                   onClick={handleGenerateSummary}
                   className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-semibold transition-colors"
                 >
@@ -316,15 +390,24 @@ export default function NarratorDetails() {
 
               {aiSummary && (
                 <div className="text-sm text-purple-900 leading-relaxed font-arabic space-y-2">
-                  {aiSummary.status === "ok" && consensus?.status === "dispute" && (
-                    <p role="note" className="rounded border border-amber-300 bg-amber-50 p-2 text-xs font-semibold text-amber-900">
-                      العلماء مختلفون في هذا الراوي: الاقتباس أدناه قول واحد من أقوالهم وليس إجماعاً. راجع بقية الأقوال.
-                    </p>
-                  )}
+                  {aiSummary.status === "ok" &&
+                    consensus?.status === "dispute" && (
+                      <p
+                        role="note"
+                        className="rounded border border-amber-300 bg-amber-50 p-2 text-xs font-semibold text-amber-900"
+                      >
+                        العلماء مختلفون في هذا الراوي: الاقتباس أدناه قول واحد
+                        من أقوالهم وليس إجماعاً. راجع بقية الأقوال.
+                      </p>
+                    )}
                   {aiSummary.status === "ok" ? (
                     <div className="bg-surface p-3 rounded shadow-sm border border-purple-100">
-                      <p className="font-bold text-lg mb-1">«{aiSummary.verbatimQuote}»</p>
-                      <p className="text-xs text-purple-600 mb-3">— {aiSummary.sourceBook}</p>
+                      <p className="font-bold text-lg mb-1">
+                        «{aiSummary.verbatimQuote}»
+                      </p>
+                      <p className="text-xs text-purple-600 mb-3">
+                        — {aiSummary.sourceBook}
+                      </p>
                       <div className="bg-purple-50 p-2 rounded">
                         <span className="text-xs text-slate-700">
                           {aiSummary.justification}
@@ -346,8 +429,14 @@ export default function NarratorDetails() {
           {/* Scholar Evaluations */}
           <div>
             <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-              <h4 className="text-lg font-semibold text-ink">أقوال الجرح والتعديل</h4>
-              <Link href="/sources#jarh-tadil" target="_blank" className="text-xs font-semibold text-brand-blue underline">
+              <h4 className="text-lg font-semibold text-ink">
+                أقوال الجرح والتعديل
+              </h4>
+              <Link
+                href="/sources#jarh-tadil"
+                target="_blank"
+                className="text-xs font-semibold text-brand-blue underline"
+              >
                 مصادر الأقوال
               </Link>
             </div>
@@ -357,14 +446,22 @@ export default function NarratorDetails() {
                 {consensus.status === "dispute" ? (
                   <div className="space-y-4">
                     {consensus.groups.map((group) => (
-                      <section key={group.camp} aria-label={CAMP_HEADING[group.camp]}>
+                      <section
+                        key={group.camp}
+                        aria-label={CAMP_HEADING[group.camp]}
+                      >
                         <h5 className="mb-2 text-sm font-bold text-slate-700">
                           {CAMP_HEADING[group.camp]}{" "}
-                          <span className="font-normal text-ink-subtle">({group.items.length.toLocaleString("ar-EG")})</span>
+                          <span className="font-normal text-ink-subtle">
+                            ({group.items.length.toLocaleString("ar-EG")})
+                          </span>
                         </h5>
                         <div className="space-y-3">
                           {group.items.map(({ evaluation, index }) => (
-                            <EvaluationCard key={index} evalRecord={evaluation} />
+                            <EvaluationCard
+                              key={index}
+                              evalRecord={evaluation}
+                            />
                           ))}
                         </div>
                       </section>
@@ -379,12 +476,13 @@ export default function NarratorDetails() {
                 )}
               </>
             ) : (
-              <p className="text-sm text-ink-subtle">لا توجد أقوال مسجلة لهذا الراوي.</p>
+              <p className="text-sm text-ink-subtle">
+                لا توجد أقوال مسجلة لهذا الراوي.
+              </p>
             )}
           </div>
         </>
       )}
     </div>
-
   );
 }

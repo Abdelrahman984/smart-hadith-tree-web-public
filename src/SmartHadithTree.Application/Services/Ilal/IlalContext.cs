@@ -16,6 +16,7 @@ public sealed record IlalNarrator(
     bool NoHearingAfterIkhtilat = false)
 {
     public int Tier => NarratorGradeScale.ToTier(IbnHajarRank, GradeEn);
+    public bool IsRanked => NarratorGradeScale.IsRanked(IbnHajarRank, GradeEn);
     public bool IsCompanion => NarratorGradeScale.IsCompanion(IbnHajarRank, GradeEn, GenerationTier);
     public bool? IsTabii => NarratorGradeScale.IsTabii(IbnHajarRank, GradeEn, GenerationTier);
     public string GradeLabel => NarratorGradeScale.ToArabicLabel(IbnHajarRank, GradeEn);
@@ -85,6 +86,21 @@ public sealed class IlalContext
     public IlalNarrator? Narrator(Guid id) => Narrators.GetValueOrDefault(id);
 
     public string NameOf(Guid id) => Narrators.TryGetValue(id, out var n) ? n.Name : "راوٍ غير معروف";
+
+    /// <summary>The same narrators, relations and hearings over another set of chains.</summary>
+    public IlalContext WithChains(IReadOnlyList<IlalChain> chains) => new()
+    {
+        Chains = chains,
+        Narrators = Narrators,
+        Relations = Relations,
+        NarratorsWithRelations = NarratorsWithRelations,
+        Hearings = Hearings,
+        HearingEvidence = HearingEvidence,
+        GroupRules = GroupRules
+    };
+
+    /// <summary>Whether the narrator has a grade (see <see cref="NarratorGradeScale.IsRanked"/>); false for one the data lacks.</summary>
+    public bool IsRanked(Guid id) => Narrators.TryGetValue(id, out var n) && n.IsRanked;
 
     public int TierOf(Guid id) => Narrators.TryGetValue(id, out var n) ? n.Tier : NarratorGradeScale.DefaultTier;
 }

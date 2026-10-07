@@ -95,6 +95,7 @@ Returns the full Isnad tree for a specific Hadith using a Recursive CTE query.
       "parentNodeId": "guid (parent_transmission_id)",
       "narratorName": "سفيان بن عيينة",
       "knownAs": "سفيان",
+      "mentionedName": "سفيان",
       "generationTier": "أتباع التابعين",
       "transmissionTerm": "حدثنا",
       "stepOrder": 2
@@ -102,6 +103,8 @@ Returns the full Isnad tree for a specific Hadith using a Recursive CTE query.
   ]
 }
 ```
+
+`mentionedName` (also on the nodes of `/api/Takhreej`) is the form of the narrator's name that the isnads of the requested hadiths use most (counted in `FullIsnadText`); a form shared by two narrators of the same tree goes to the one whose isnads use it most. It is `null` when no isnad names him (e.g. the compiler), and clients then fall back to `narratorName`.
 
 ## 4. Narrator Details & AI
 

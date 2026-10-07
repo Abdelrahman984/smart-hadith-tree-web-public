@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, UserCheck, X, type LucideIcon } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import { useMediaQuery } from "@/components/useMediaQuery";
@@ -71,12 +71,12 @@ export default function HadithWorkspace({
   panelLabel,
   bookFocus = false,
 }: HadithWorkspaceProps) {
-  // Set the page's defaults before the first render, so the panel does not slide open on load.
-  const initialized = useRef<true | null>(null);
-  if (initialized.current == null) {
-    initialized.current = true;
+  // Set the page's defaults before the first paint, so the panel does not slide open on load. Not during render:
+  // the store has subscribers (the workspace of the page being left), and React forbids updating them while rendering.
+  useLayoutEffect(() => {
     useWorkspaceStore.getState().init({ tab: defaultTab, open: panelStartsOpen === "desktop" && !isPhone() });
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on mount
+  }, []);
 
   const panelOpen = useWorkspaceStore((s) => s.panelOpen);
   const activeTab = useWorkspaceStore((s) => s.activeTab);

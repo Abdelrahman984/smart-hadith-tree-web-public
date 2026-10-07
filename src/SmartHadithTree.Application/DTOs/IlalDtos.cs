@@ -43,8 +43,25 @@ public class IlalTariqDto
     /// </summary>
     public int? WeakestTier { get; set; }
 
+    /// <summary>
+    /// How many narrators above the compiler have no grade. They are left out of <see cref="WeakestTier"/>
+    /// (no verdict is not a weakness), so a route with any of them cannot be called sound on the rest alone.
+    /// </summary>
+    public int UnratedNarratorCount { get; set; }
+
     /// <summary>The weakest narrator of this tariq (the first one met going up, on a tie).</summary>
     public Guid? WeakestNarratorId { get; set; }
+
+    /// <summary>The Companion this tariq ends at; null when it stops short of one.</summary>
+    public Guid? CompanionId { get; set; }
+
+    public string? CompanionName { get; set; }
+
+    /// <summary>
+    /// True when the tariq reaches a different Companion from most of the others: a witness (شاهد), not another route.
+    /// It is kept out of the madar and narrator comparison and its findings, but still counts for the grade.
+    /// </summary>
+    public bool IsShahid { get; set; }
 }
 
 /// <summary>A narrator at which two or more turuq diverge.</summary>

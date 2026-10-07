@@ -20,6 +20,17 @@ public static class NarratorGradeScale
     public static int ToTier(int? rank, string? gradeEn) =>
         rank is >= 1 and <= 12 ? rank.Value : ToTier(gradeEn);
 
+    /// <summary>
+    /// Whether the narrator has a verdict at all: Ibn Hajar's rank, or a legacy grade that says something.
+    /// Without one the tier is only <see cref="DefaultTier"/>, a placeholder, and the narrator is «غير محرر»,
+    /// not weak.
+    /// </summary>
+    public static bool IsRanked(int? rank, string? gradeEn)
+    {
+        if (rank is >= 1 and <= 12) return true;
+        return !string.IsNullOrEmpty(gradeEn) && ToArabicLabel(gradeEn) != "غير محرر";
+    }
+
     /// <summary>Arabic label of Ibn Hajar's rank, else of the legacy grade.</summary>
     public static string ToArabicLabel(int? rank, string? gradeEn) =>
         rank is >= 1 and <= 12 ? RankLabels[rank.Value] : ToArabicLabel(gradeEn);

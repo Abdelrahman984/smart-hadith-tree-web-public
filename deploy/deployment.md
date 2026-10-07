@@ -40,13 +40,13 @@ docker compose up --build
 ```
 
 The database is not created with data automatically. The API applies EF migrations on start (empty schema);
-load the corpus either by restoring the current backup `backups/SmartHadithTree_Shamela_v5_2026-10-05.bak`
+load the corpus either by restoring the current backup `backups/SmartHadithTree_Shamela_v7_2026-10-07.bak`
 (31 books, 274,597 hadiths; git-ignored, mounted read-only at `/backups` in the `db` container; versions and checksums
 in `backups/README.md`) or by rebuilding it with the Shamela pipeline (`docs/data_ingestion.md`, `docs/shamela_migration.md`).
 
-The backup was taken from `SmartHadithTree_ShamelaV5`, the database name the local `appsettings.json` uses. The compose
-file connects to a database called `SmartHadithTree`, so restore into that name (`RESTORE DATABASE SmartHadithTree ... WITH MOVE`)
-or change `Database=` in the compose connection string. Check the logical file names first with `RESTORE FILELISTONLY`.
+The backup was taken from `SmartHadithTree_ShamelaV7`, the database name both the local `appsettings.json` and this
+compose file use, so restore into that name (`RESTORE DATABASE SmartHadithTree_ShamelaV7 ... WITH MOVE`). Check the
+logical file names first with `RESTORE FILELISTONLY`. (`docker-compose.prod.yml` still connects to `SmartHadithTree`.)
 
 ## Status
 
@@ -59,7 +59,8 @@ Notes from that run:
 - Put `MSSQL_SA_PASSWORD` in a git-ignored `.env` file next to `docker-compose.yml` (compose reads it automatically).
 - Start `db` first, restore, then start `api` and `web`: `docker compose up -d db`, restore, `docker compose up -d api web`.
   The restore needs `WITH MOVE` to the Linux paths, e.g.
-  `MOVE 'SmartHadithTree_ShamelaV5' TO '/var/opt/mssql/data/SmartHadithTree.mdf', MOVE 'SmartHadithTree_ShamelaV5_log' TO '/var/opt/mssql/data/SmartHadithTree_log.ldf'`.
+  `MOVE 'SmartHadithTree_ShamelaV7' TO '/var/opt/mssql/data/SmartHadithTree_ShamelaV7.mdf', MOVE 'SmartHadithTree_ShamelaV7_log' TO '/var/opt/mssql/data/SmartHadithTree_ShamelaV7_log.ldf'`
+  (that run used the v5 backup; the logical names there were `SmartHadithTree_ShamelaV5`, so confirm them for v7 with `RESTORE FILELISTONLY`).
 - The first web build once failed while next/font fetched Google Fonts and passed on retry, so the build needs
   internet access.
 - Not yet checked: AI summaries and Ilal explanations (they need a Together or Gemini key), and `/verify` end to end.

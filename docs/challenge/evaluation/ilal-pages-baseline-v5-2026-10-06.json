@@ -1,0 +1,151 @@
+{
+ "tahur": {
+  "sources": 16,
+  "turuq": 22,
+  "shawahid": 0,
+  "grade": "صحيح",
+  "findings": 9,
+  "matn": 3,
+  "matnQadihah": 1,
+  "byType": {
+   "Idtirab/Qadihah": 1,
+   "HiddenInqita/Tanbih": 6,
+   "Shudhudh/Tanbih": 2
+  }
+ },
+ "niyyat": {
+  "sources": 8,
+  "turuq": 13,
+  "shawahid": 1,
+  "grade": "صحيح",
+  "findings": 11,
+  "matn": 4,
+  "matnQadihah": 1,
+  "byType": {
+   "Shudhudh/Qadihah": 1,
+   "Ziyadah/GhayrQadihah": 1,
+   "WaslIrsal/Tanbih": 1,
+   "Shudhudh/Tanbih": 2,
+   "HiddenInqita/Tanbih": 6
+  }
+ },
+ "jannah": {
+  "sources": 9,
+  "turuq": 10,
+  "shawahid": 0,
+  "grade": "صحيح",
+  "findings": 2,
+  "matn": 0,
+  "matnQadihah": 0,
+  "byType": {
+   "HiddenInqita/Tanbih": 2
+  }
+ },
+ "mughira": {
+  "sources": 12,
+  "turuq": 13,
+  "shawahid": 0,
+  "grade": "حسن",
+  "findings": 9,
+  "matn": 6,
+  "matnQadihah": 0,
+  "byType": {
+   "Ziyadah/GhayrQadihah": 2,
+   "HiddenInqita/Tanbih": 3,
+   "Shudhudh/Tanbih": 4
+  }
+ },
+ "nasiha": {
+  "sources": 30,
+  "turuq": 32,
+  "shawahid": 10,
+  "grade": "صحيح",
+  "findings": 22,
+  "matn": 11,
+  "matnQadihah": 4,
+  "byType": {
+   "Tadlis/Qadihah": 2,
+   "Shudhudh/Qadihah": 1,
+   "Idtirab/Qadihah": 3,
+   "Ziyadah/GhayrQadihah": 3,
+   "WaslIrsal/GhayrQadihah": 1,
+   "Shudhudh/Tanbih": 4,
+   "WaslIrsal/Tanbih": 1,
+   "Ikhtilat/Tanbih": 1,
+   "HiddenInqita/Tanbih": 6
+  }
+ },
+ "halal": {
+  "sources": 30,
+  "turuq": 35,
+  "shawahid": 2,
+  "grade": "صحيح",
+  "findings": 40,
+  "matn": 14,
+  "matnQadihah": 5,
+  "byType": {
+   "Ikhtilat/Qadihah": 1,
+   "Tadlis/Qadihah": 1,
+   "Shudhudh/Qadihah": 1,
+   "Idtirab/Qadihah": 4,
+   "Ikhtilat/Tanbih": 5,
+   "Shudhudh/Tanbih": 8,
+   "Ziyadah/Tanbih": 1,
+   "RafWaqf/Tanbih": 3,
+   "WaslIrsal/Tanbih": 1,
+   "HiddenInqita/Tanbih": 15
+  }
+ },
+ "darar": {
+  "sources": 26,
+  "turuq": 27,
+  "shawahid": 8,
+  "grade": "صحيح",
+  "findings": 13,
+  "matn": 4,
+  "matnQadihah": 0,
+  "byType": {
+   "Tadlis/Qadihah": 1,
+   "Ziyadah/GhayrQadihah": 1,
+   "HiddenInqita/Tanbih": 7,
+   "Ziyadah/Tanbih": 1,
+   "Shudhudh/Tanbih": 2,
+   "WaslIrsal/Tanbih": 1
+  }
+ },
+ "kadhib": {
+  "sources": 30,
+  "turuq": 29,
+  "shawahid": 14,
+  "grade": "صحيح",
+  "findings": 10,
+  "matn": 3,
+  "matnQadihah": 0,
+  "byType": {
+   "Tadlis/Qadihah": 2,
+   "Ziyadah/GhayrQadihah": 2,
+   "RafWaqf/GhayrQadihah": 1,
+   "Shudhudh/Tanbih": 1,
+   "RafWaqf/Tanbih": 2,
+   "Ikhtilat/Tanbih": 1,
+   "HiddenInqita/Tanbih": 1
+  }
+ },
+ "hayaa": {
+  "sources": 30,
+  "turuq": 32,
+  "shawahid": 11,
+  "grade": "صحيح",
+  "findings": 11,
+  "matn": 2,
+  "matnQadihah": 0,
+  "byType": {
+   "Ziyadah/GhayrQadihah": 1,
+   "WaslIrsal/GhayrQadihah": 1,
+   "Tadlis/GhayrQadihah": 1,
+   "HiddenInqita/Tanbih": 6,
+   "Shudhudh/Tanbih": 1,
+   "Ikhtilat/Tanbih": 1
+  }
+ }
+}

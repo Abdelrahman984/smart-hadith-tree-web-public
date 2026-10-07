@@ -553,6 +553,7 @@ public class HadithSearchService(
             return null;
 
         var nodes = await chainRepository.GetIsnadTreeAsync(hadithId, ct);
+        await SetMentionedNamesAsync(nodes, [hadith], _ => [hadithId], ct);
 
         return new IsnadTreeResponseDto
         {
@@ -562,6 +563,52 @@ public class HadithSearchService(
             MatnArabic = hadith.MatnArabic,
             Nodes = nodes
         };
+    }
+
+    /// <summary>
+    /// Names each narrator the way the chosen hadiths' isnads mention him most. A narrator seen in several nodes is
+    /// named once, from the isnads of every hadith he appears in.
+    /// </summary>
+    private async Task SetMentionedNamesAsync<T>(
+        List<T> nodes, List<HadithText> hadiths, Func<T, IEnumerable<Guid>> hadithIdsOf, CancellationToken ct)
+        where T : IsnadNodeDto
+    {
+        var narratorIds = nodes.Select(n => n.NarratorId).Distinct().ToList();
+        var kunyahs = await context.Narrators
+            .Where(n => narratorIds.Contains(n.Id))
+            .Select(n => new { n.Id, n.Kunyah })
+            .ToDictionaryAsync(n => n.Id, n => n.Kunyah, ct);
+        var isnadById = hadiths.ToDictionary(h => h.Id, h => h.FullIsnadText ?? h.MatnArabic);
+        var byNarrator = nodes.GroupBy(n => n.NarratorId).ToList();
+
+        string? KunyahOf(Guid id) => kunyahs.GetValueOrDefault(id);
+        List<string?> IsnadsOf(IEnumerable<T> narratorNodes) => narratorNodes
+            .SelectMany(hadithIdsOf)
+            .Distinct()
+            .Select(id => isnadById.GetValueOrDefault(id))
+            .ToList();
+
+        // A form shared by several narrators of this tree ("يحيى بن سعيد", "سفيان") goes to the one whose isnads
+        // use it clearly most; when none does, nobody gets it.
+        var counts = byNarrator.ToDictionary(
+            g => g.Key,
+            g => NarratorMentionedName.Counts(g.First().NarratorName, g.First().KnownAs, IsnadsOf(g), KunyahOf(g.Key)));
+        var excluded = byNarrator.ToDictionary(g => g.Key, _ => new HashSet<string>());
+        foreach (var form in counts.SelectMany(c => c.Value.Keys).GroupBy(k => k).Where(g => g.Count() > 1))
+        {
+            var holders = counts.Where(c => c.Value.ContainsKey(form.Key)).Select(c => (c.Key, Count: c.Value[form.Key])).ToList();
+            var max = holders.Max(h => h.Count);
+            var owner = max > 0 && holders.Count(h => h.Count == max) == 1 ? holders.First(h => h.Count == max).Key : (Guid?)null;
+            foreach (var holder in holders.Where(h => h.Key != owner)) excluded[holder.Key].Add(form.Key);
+        }
+
+        foreach (var narrator in byNarrator)
+        {
+            var name = NarratorMentionedName.Choose(
+                narrator.First().NarratorName, narrator.First().KnownAs, IsnadsOf(narrator), KunyahOf(narrator.Key),
+                excluded[narrator.Key]);
+            foreach (var node in narrator) node.MentionedName = name;
+        }
     }
 
     /// <summary>
@@ -595,6 +642,7 @@ public class HadithSearchService(
 
         // Get merged chain nodes
         var nodes = await chainRepository.GetComparativeIsnadTreeAsync(hadithIds, ct);
+        await SetMentionedNamesAsync(nodes, hadiths, n => n.SourceHadithIds, ct);
 
         var response = new ComparativeTreeResponseDto
         {

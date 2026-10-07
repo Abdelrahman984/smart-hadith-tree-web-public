@@ -21,6 +21,17 @@ const SPEECH_START = /\s(?:قال|يقول|انه|انها|ان)\s/gu;
 const TRAILING_COMMENTARY =
   /(?:^|\s)(?:قال\s+ابو\s+عيسي|قال\s+ابو\s+داود|قال\s+ابو\s+عبد\s+الرحمن|قال\s+ابو\s+عبد\s+الله|قال\s+ابو\s+الحسن|قال\s+الشيخ|قال\s+النسايي|قال\s+الاعظمي|قال\s+الالباني|قال\s+شعيب|قال\s+حسين\s+سليم|قال\s+المحقق|اسناده\s+صحيح|اسناده\s+حسن|اسناده\s+ضعيف|هذا\s+حديث|وفي\s+الباب\s+عن|وحدثنا|وحدثني|بهذا\s+الاسناد|فذكر\s+الحديث|فذكر\s+نحوه)(?:\s|$)/u;
 
+/**
+ * What a compiler or editor adds after (or in place of) the matn: a note on other routes or the grade, a pointer to another
+ * text instead of the text, the printed edition's symbols. Whole words, tested on normalized text.
+ */
+const EDITORIAL_NOTE =
+  /(?:^|\s)(?:(?:و?كذلك\s+)?و?رواه|و?رواهما|و?اخرجه|و?اخرجاه|و?اخرجهما|لم\s+يرو|تفرد\s+به|حكم\s+حسين|و?ذكر\s+الحديث|و?فذكر\s+(?:مثله|بمثله|بمثل|بنحو|نحو|الحديث)|بمثل\s+حديث|و?هذا\s+الحديث|ب\s+د\s+ع\s+ف\s+م|تحفه|اتحاف)(?:\s|$)/u;
+/** Another isnad pasted into the record; used only once the matn start is known (before that the isnad is in the body). */
+const PASTED_ISNAD = /(?:^|\s)(?:حدثنا|حدثني|اخبرنا|اخبرني)\s+(?!رسول|النبي|نبي|الصادق)/u;
+/** The editor's insertions and page markers, always in square brackets. */
+const BRACKETED_NOTE = /\[[^\]]*\]/g;
+
 /** Normalizes for comparison: no diacritics, tatweel, honorifics or punctuation; one form of alef, taa marbuta, yaa. */
 export function normalizeForComparison(text: string | null | undefined): string {
   if (!text || !text.trim()) return "";
@@ -56,7 +67,7 @@ function lastMatch(re: RegExp, text: string): RegExpExecArray | null {
  * after the last transmission formula is used (a mawquf text), and failing that the whole text.
  */
 export function extractBody(fullText: string | null | undefined): string {
-  const normalized = normalizeForComparison(fullText);
+  const normalized = normalizeForComparison((fullText ?? "").replace(BRACKETED_NOTE, " "));
   if (normalized.length === 0) return normalized;
 
   let start = 0;
@@ -75,8 +86,10 @@ export function extractBody(fullText: string | null | undefined): string {
   }
 
   let body = normalized.slice(start);
-  const tail = TRAILING_COMMENTARY.exec(body);
-  if (tail && tail.index > 0) body = body.slice(0, tail.index);
+  const cuts = [TRAILING_COMMENTARY.exec(body), EDITORIAL_NOTE.exec(body), found ? PASTED_ISNAD.exec(body) : null]
+    .filter((m): m is RegExpExecArray => m !== null && m.index > 0)
+    .map((m) => m.index);
+  if (cuts.length > 0) body = body.slice(0, Math.min(...cuts));
   return body.trim();
 }
 

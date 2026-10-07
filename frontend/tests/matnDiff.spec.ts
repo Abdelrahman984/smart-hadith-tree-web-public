@@ -20,6 +20,29 @@ test.describe('extractBody (port of MatnText.ExtractBody)', () => {
     expect(khuzaymah).toBe('كان النبي اذا ذهب المذهب ابعد');
   });
 
+  test('cuts the notes, pointers, bracketed editor text and a pasted isnad that the server cuts', () => {
+    const isnad = 'حدثنا عفان حدثنا أبان عن يحيى عن أبي مالك الأشعري أن رسول الله ﷺ قال: ';
+    const matn = 'الطهور شطر الإيمان والحمد لله تملأ الميزان';
+    const expected = 'ان رسول الله قال الطهور شطر الايمان والحمد لله تملا الميزان';
+    for (const tail of [
+      '. أخرجه مسلم في الصحيح عن إسحاق',
+      '. وكذلك رواه معاذ بن معاذ',
+      ' [حكم حسين سليم أسد]: إسناده صحيح',
+      ' [٦٦١]',
+      ' ب د ع ف م تحفه اتحاف',
+      ' تفرد به عثمان عن الدراوردي',
+      ' فذكر مثله إلا أنه قال: الصلاة برهان',
+      ' وهذا الحديث صحيح',
+    ]) {
+      expect(extractBody(isnad + matn + tail), tail).toBe(expected);
+    }
+    expect(extractBody('سمعت النبي ﷺ يقول: الحلال بين والحرام بين. حدثنا علي بن عبد الله حدثنا ابن عيينة')).toBe('سمعت النبي يقول الحلال بين والحرام بين');
+  });
+
+  test('a Companion saying "haddathana rasul Allah" is not a pasted isnad', () => {
+    expect(extractBody('قال عبد الله: حدثنا رسول الله ﷺ وهو الصادق المصدوق: إن أحدكم يجمع خلقه')).toContain('يجمع خلقه');
+  });
+
   test('empty in, empty out', () => {
     expect(extractBody('')).toBe('');
     expect(extractBody(null)).toBe('');

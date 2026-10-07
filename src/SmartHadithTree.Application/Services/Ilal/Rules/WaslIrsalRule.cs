@@ -62,6 +62,13 @@ public sealed class WaslIrsalRule : IIlalRule
                     "والطرفان متقاربان، فيحتاج إلى نظر في القرائن.", mawsulSide.Concat(mursalSide).ToList(), 0.4)
             };
 
+            if (severity == IllahSeverity.Qadihah && IsnadBranching.AllUnranked(flagged))
+            {
+                severity = IllahSeverity.Tanbih;
+                confidence = 0.35;
+                conclusion += " لكن لم يُحرَّر حال رواة هذا الطرف في الكتب المعتمدة، فلا يُجزم بترجيح الطرف الآخر.";
+            }
+
             yield return new IlalFindingDto
             {
                 Type = IllahType.WaslIrsal,
@@ -84,7 +91,8 @@ public sealed class WaslIrsalRule : IIlalRule
             {
                 StudentId = g.Key,
                 Chains = g.Select(x => x.Chain).ToList(),
-                StudentTier = context.TierOf(g.Key)
+                StudentTier = context.TierOf(g.Key),
+                StudentRanked = context.IsRanked(g.Key)
             })
             .ToList();
 

@@ -28,8 +28,13 @@ public sealed class HiddenInqitaRule : IIlalRule
             var chains = group.Select(x => x.Chain).Distinct().ToList();
             var statesHearing = group.Any(x => TransmissionTerms.IsExplicitHearing(x.Link.Term));
 
+            // A narrator outside the graded set (late narrators: the shaykhs of Tabarani, Bayhaqi, al-Hakim) has no
+            // teacher/student list in the biographical books, so a missing link is a gap in the data, not in the isnad.
+            var dataGap = !context.IsRanked(sheikhId) || !context.IsRanked(studentId);
+
             var evidence =
-                $"لم يُذكر ({context.NameOf(sheikhId)}) في شيوخ ({context.NameOf(studentId)})، ولا الثاني في تلاميذ الأول، فلم يثبت اللقاء بينهما."
+                (dataGap ? "أحد الراويين لم يُحرَّر في كتب التراجم المعتمدة، فقوائم شيوخه وتلاميذه غير مستوفاة. " : "")
+                + $"لم يُذكر ({context.NameOf(sheikhId)}) في شيوخ ({context.NameOf(studentId)})، ولا الثاني في تلاميذ الأول، فلم يثبت اللقاء بينهما."
                 + (statesHearing
                     ? " لكن ورد التصريح بالسماع في الإسناد، فقد يكون نقصاً في كتب التراجم أو خطأً في تمييز الراوي."
                     : " وقد يكون ذلك نقصاً في كتب التراجم أو خطأً في تمييز الراوي آلياً، فيُراجع.");
@@ -38,11 +43,11 @@ public sealed class HiddenInqitaRule : IIlalRule
             {
                 Type = IllahType.HiddenInqita,
                 Severity = IllahSeverity.Tanbih,
-                TitleAr = "لم يثبت اللقاء",
+                TitleAr = dataGap ? "لم يثبت اللقاء (بيانات ناقصة)" : "لم يثبت اللقاء",
                 EvidenceAr = evidence,
                 NarratorIds = [sheikhId, studentId],
                 HadithIds = chains.Select(c => c.HadithId).Distinct().ToList(),
-                Confidence = statesHearing ? 0.25 : 0.45
+                Confidence = dataGap ? 0.2 : statesHearing ? 0.25 : 0.45
             };
         }
     }

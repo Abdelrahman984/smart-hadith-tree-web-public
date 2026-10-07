@@ -153,6 +153,9 @@ def link_student(name: str, mukhtalit: int) -> dict:
 # number, "mukhtalitun" by name; {"id": <registry id or null>, "note": why}.
 OVERRIDES = json.load(open(os.path.join(SCRIPTS, 'ilal_overrides.json'), encoding='utf-8'))
 index_of = {r: j for j, r in enumerate(ids)}
+for _j, _e in enumerate(entries):                        # a narrator merged into another (same person in two books)
+    for _m in _e.get('merged_ids', ()):
+        index_of.setdefault(_m, _j)
 
 
 def overridden(section: str, key: str, link: dict) -> dict:

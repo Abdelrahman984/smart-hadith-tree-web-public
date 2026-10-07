@@ -34,13 +34,19 @@ public class IlalAnalysisService(IHadithTreeDbContext context) : IIlalAnalysisSe
     /// <summary>Runs all rules against an already-loaded context.</summary>
     public static IlalReportDto Analyze(IlalContext ilalContext, IEnumerable<IIlalRule>? rules = null)
     {
+        // Witnesses through another Companion are not routes to the same madar: the rules see the routes only.
+        var mainCompanion = Shawahid.MainCompanion(ilalContext);
+        var routes = ilalContext.Chains.Where(c => !Shawahid.IsShahid(ilalContext, c, mainCompanion)).ToList();
+        var shawahidCount = ilalContext.Chains.Count - routes.Count;
+        var ruleContext = shawahidCount == 0 ? ilalContext : ilalContext.WithChains(routes);
+
         var findings = (rules ?? DefaultRules)
-            .SelectMany(r => r.Evaluate(ilalContext))
+            .SelectMany(r => r.Evaluate(ruleContext))
             .OrderByDescending(f => f.Severity)
             .ThenByDescending(f => f.Confidence)
             .ToList();
 
-        var madars = IsnadBranching.FindSplitPoints(ilalContext)
+        var madars = IsnadBranching.FindSplitPoints(ruleContext)
             .Select(s => new IlalMadarDto
             {
                 NarratorId = s.MadarId,
@@ -57,8 +63,10 @@ public class IlalAnalysisService(IHadithTreeDbContext context) : IIlalAnalysisSe
             Turuq = ilalContext.Chains.Select(c =>
             {
                 // The compiler (index 0) is not part of the strength of the isnad, only the narrators above him.
-                var weakest = c.Path.Skip(1)
+                var above = c.Path.Skip(1).ToList();
+                var weakest = above
                     .Select((id, i) => (Id: id, Tier: ilalContext.TierOf(id), Index: i))
+                    .Where(x => ilalContext.IsRanked(x.Id))
                     .OrderByDescending(x => x.Tier).ThenBy(x => x.Index)
                     .Cast<(Guid Id, int Tier, int Index)?>()
                     .FirstOrDefault();
@@ -69,13 +77,17 @@ public class IlalAnalysisService(IHadithTreeDbContext context) : IIlalAnalysisSe
                     HadithNumber = c.HadithNumber,
                     IsMarfu = MatnText.IsMarfu(c.MatnArabic),
                     WeakestTier = weakest?.Tier,
-                    WeakestNarratorId = weakest?.Id
+                    WeakestNarratorId = weakest?.Id,
+                    UnratedNarratorCount = above.Count(id => !ilalContext.IsRanked(id)),
+                    CompanionId = Shawahid.CompanionOf(ilalContext, c),
+                    CompanionName = Shawahid.CompanionOf(ilalContext, c) is { } companion ? ilalContext.NameOf(companion) : null,
+                    IsShahid = Shawahid.IsShahid(ilalContext, c, mainCompanion)
                 };
             }).ToList(),
             Madars = madars,
             Findings = findings,
             HasQadihah = findings.Any(f => f.Severity == IllahSeverity.Qadihah),
-            SummaryAr = Summarize(findings, ilalContext.Chains.Count)
+            SummaryAr = Summarize(findings, routes.Count, shawahidCount)
         };
     }
 
@@ -236,15 +248,16 @@ public class IlalAnalysisService(IHadithTreeDbContext context) : IIlalAnalysisSe
         return paths;
     }
 
-    private static string Summarize(IReadOnlyCollection<IlalFindingDto> findings, int chainCount)
+    private static string Summarize(IReadOnlyCollection<IlalFindingDto> findings, int chainCount, int shawahidCount)
     {
+        var shawahidNote = shawahidCount == 0 ? "" : $" وفُصل {shawahidCount} {(shawahidCount == 1 ? "شاهد" : "شواهد")} عن صحابي آخر فلم يدخل في المقارنة.";
         if (chainCount == 0)
             return "لا توجد أسانيد مستخرجة لهذه الأحاديث، فتعذّر فحص العلل.";
 
         if (findings.Count == 0)
             return chainCount == 1
-                ? "لم تظهر علة في هذا الإسناد بحسب القواعد الآلية. ويُستحسن جمع الطرق للكشف عن العلل الخفية."
-                : $"لم تظهر علة في الطرق المجموعة ({chainCount}) بحسب القواعد الآلية.";
+                ? "لم تظهر علة في هذا الإسناد بحسب القواعد الآلية. ويُستحسن جمع الطرق للكشف عن العلل الخفية." + shawahidNote
+                : $"لم تظهر علة في الطرق المجموعة ({chainCount}) بحسب القواعد الآلية.{shawahidNote}";
 
         var qadihah = findings.Count(f => f.Severity == IllahSeverity.Qadihah);
         var ghayr = findings.Count(f => f.Severity == IllahSeverity.GhayrQadihah);
@@ -255,6 +268,6 @@ public class IlalAnalysisService(IHadithTreeDbContext context) : IIlalAnalysisSe
         if (ghayr > 0) parts.Add($"{ghayr} علة غير قادحة");
         if (tanbih > 0) parts.Add($"{tanbih} تنبيه");
 
-        return $"ظهر بعد فحص {chainCount} {(chainCount == 1 ? "طريق" : "طرق")}: {string.Join("، ", parts)}. وهذه نتائج آلية تُعين المحقق ولا تغني عن نظره.";
+        return $"ظهر بعد فحص {chainCount} {(chainCount == 1 ? "طريق" : "طرق")}: {string.Join("، ", parts)}. وهذه نتائج آلية تُعين المحقق ولا تغني عن نظره.{shawahidNote}";
     }
 }

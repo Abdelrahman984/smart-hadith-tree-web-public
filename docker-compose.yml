@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
     environment:
-      ConnectionStrings__DefaultConnection: "Server=db;Database=SmartHadithTree;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
+      ConnectionStrings__DefaultConnection: "Server=db;Database=SmartHadithTree_ShamelaV7;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
       Together__ApiKey: ${TOGETHER_API_KEY:-}
       Together__ExtraBody: ${TOGETHER_EXTRA_BODY:-}
       Gemini__ApiKey: ${GEMINI_API_KEY:-}

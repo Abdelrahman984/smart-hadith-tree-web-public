@@ -113,7 +113,7 @@ export default function IsnadGraphCanvas({ graph, bookFocus = false }: IsnadGrap
   // The graph's narrators, for the find box.
   const narrators = useMemo<NarratorSearchItem[]>(
     () =>
-      nodes.map((n) => {
+      nodes.filter((n) => n.type !== "reference").map((n) => {
         const d = n.data as { narratorName?: string; famousName?: string; fullName?: string; generationTier?: string | null; gradeEn?: string };
         const short = d.narratorName ?? d.famousName ?? "";
         return { id: n.id, name: d.fullName || short, shortName: short, tier: d.generationTier };
@@ -159,6 +159,7 @@ export default function IsnadGraphCanvas({ graph, bookFocus = false }: IsnadGrap
 
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
+      if (node.type === "reference") return; // a book's card, not a narrator: there is no narrator to open
       const data = node.data as { anomalyReason?: string | null; travelNote?: string | null };
       openDrawer(node.id, { anomalyReason: data.anomalyReason, travelNote: data.travelNote });
     },

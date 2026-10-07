@@ -23,9 +23,11 @@ test.describe('single tree (/tree/[id])', () => {
   });
 
   test('draws every narrator and link of the chain', async ({ page }) => {
-    await expect(page.locator('.react-flow__node')).toHaveCount(5);
-    await expect(page.locator('.react-flow__edge')).toHaveCount(4);
-    await expect(card(page, 'محمد بن إسماعيل البخاري')).toContainText('المصدر والمُخَرِّج');
+    await expect(page.locator('.react-flow__node')).toHaveCount(6); // five narrators and the source card
+    await expect(page.locator('.react-flow__edge')).toHaveCount(5);
+    // The first narrator keeps his own card; the book's source card hangs below it.
+    await expect(card(page, 'محمد بن إسماعيل البخاري')).not.toContainText('المصدر والمُخَرِّج');
+    await expect(page.locator('.react-flow__node').filter({ hasText: 'المصدر والمُخَرِّج' })).toContainText('صحيح البخاري');
   });
 
   test('shows the grade of each narrator as text, not only as a colour', async ({ page }) => {
@@ -80,10 +82,10 @@ test.describe('comparative tree (/takhreej)', () => {
   });
 
   test('merges three books into one graph', async ({ page }) => {
-    // Compilers C, D, E and narrators N1, N2, N4, N5.
-    await expect(page.locator('.react-flow__node')).toHaveCount(7);
-    // N1→C, N1→D, N5→E, N2→N1, N2→N5, N4→N2.
-    await expect(page.locator('.react-flow__edge')).toHaveCount(6);
+    // Narrators C, D, E, N1, N2, N4, N5 and one source card per book.
+    await expect(page.locator('.react-flow__node')).toHaveCount(10);
+    // N1→C, N1→D, N5→E, N2→N1, N2→N5, N4→N2, and C, D, E → their book's source card.
+    await expect(page.locator('.react-flow__edge')).toHaveCount(9);
     await expect(card(page, 'سفيان بن عيينة')).toContainText('مدلس');
   });
 
@@ -184,7 +186,7 @@ test.describe('edge labels on a big graph', () => {
 
   test('are markers at rest and printed on the focused chain', async ({ page }) => {
     const marker = page.locator('[data-edge-marker="e-N2-N1"]');
-    await expect(page.locator('.react-flow__edge')).toHaveCount(14);
+    await expect(page.locator('.react-flow__edge')).toHaveCount(21); // 14 links plus a source edge for each of the 7 first narrators
     await expect(marker).toHaveAttribute('aria-label', /عنعنة مدلس/);
     await expect(page.locator('.react-flow__edge-text')).toHaveCount(0);
 
@@ -320,7 +322,7 @@ test.describe('a very large graph', () => {
     await graphReady(page);
 
     const toolbar = page.getByRole('toolbar', { name: 'أدوات الشجرة' });
-    await expect(page.locator('.react-flow__node')).toHaveCount(35);
+    await expect(page.locator('.react-flow__node')).toHaveCount(38); // 35 narrators plus one source card for each of the 3 hadiths
     await expect(card(page, 'سفيان بن عيينة')).not.toContainText('الثامنة'); // compact by default
     await expect(page.locator('.react-flow__minimap')).toBeVisible();
 

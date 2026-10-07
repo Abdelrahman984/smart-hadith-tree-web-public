@@ -26,21 +26,23 @@ A MENA-targeted SaaS platform and scholarly research tool designed to digitize, 
 
 ## Getting Started
 
+**Just want to try it?** Open the live demo, no setup needed: <https://smart-hadith.idealisticsolutions.com>. The steps below run it locally.
+
 ### Prerequisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- Windows with a local SQL Server instance (`.` or LocalDB). The default connection string uses Windows authentication (`Trusted_Connection`) and the commands below are PowerShell. On macOS/Linux use the Docker stack instead (`docker-compose.yml`, see `deploy/deployment.md` for the restore steps inside the container).
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (running the app). Running the test project (`src/SmartHadithTree.Tests`) needs the .NET 10 SDK, since it targets `net10.0`.
 - [Node.js 18+](https://nodejs.org/)
-- SQL Server (Local instance `.` or LocalDB)
 
 ### 1. Database Setup & Data Ingestion
 #### Option A: Instant Restore from Full Backup (Recommended)
-The database is not stored in git. Download the full SQL Server backup (v5, about 474 MB, 31 books) from [Google Drive](https://drive.google.com/file/d/1vtrwf-egH_T1pImVwnzx2Z2eLJalifjR/view?usp=sharing) and place it at `backups/SmartHadithTree_Shamela_v5_2026-10-05.bak` (the folder is git-ignored). To only try the product, use the live demo instead: <https://smart-hadith.idealisticsolutions.com>. The source texts come from the Shamela library; see [`docs/challenge/sources-and-licenses.md`](docs/challenge/sources-and-licenses.md) for their rights status. All versions are described in [`backups/README.md`](backups/README.md). Run the restore from the repository root:
+The database is not stored in git. Download the full SQL Server backup (v7, about 497 MB, 31 books) from [Google Drive](https://drive.google.com/file/d/19oYawbGHpfwR9ZhwsnsFSGPFGINo88cF/view?usp=sharing) and place it at `backups/SmartHadithTree_Shamela_v7_2026-10-07.bak` (the folder is git-ignored). It restores into `SmartHadithTree_ShamelaV7`, the database the API connects to by default. To only try the product, use the live demo instead: <https://smart-hadith.idealisticsolutions.com>. The source texts come from the Shamela library; see [`docs/challenge/sources-and-licenses.md`](docs/challenge/sources-and-licenses.md) for their rights status. All versions are described in [`backups/README.md`](backups/README.md). Run the restore from the repository root:
 ```powershell
-sqlcmd -S . -Q "RESTORE DATABASE [SmartHadithTree_ShamelaV5] FROM DISK = N'$((Get-Location).Path)\backups\SmartHadithTree_Shamela_v5_2026-10-05.bak' WITH REPLACE, STATS = 25;"
+sqlcmd -S . -Q "RESTORE DATABASE [SmartHadithTree_ShamelaV7] FROM DISK = N'$((Get-Location).Path)\backups\SmartHadithTree_Shamela_v7_2026-10-07.bak' WITH REPLACE, STATS = 25;"
 ```
 
 #### Option B: Run Migrations & Load from `data/shamela_rijal`
 Needs the data files built from a local Shamela 4 installation (see [`docs/data_ingestion.md`](docs/data_ingestion.md)).
-1. Ensure SQL Server is running and update the connection string in `src/SmartHadithTree.Api/appsettings.json` and `src/SmartHadithTree.Etl/appsettings.json` if needed (the default database is `SmartHadithTree_ShamelaV5`).
+1. Ensure SQL Server is running and update the connection string in `src/SmartHadithTree.Api/appsettings.json` and `src/SmartHadithTree.Etl/appsettings.json` if needed (the default database is `SmartHadithTree_ShamelaV7`).
 2. Run the database migrations:
    ```powershell
    dotnet ef database update --project src/SmartHadithTree.Infrastructure --startup-project src/SmartHadithTree.Api
@@ -55,7 +57,7 @@ Needs the data files built from a local Shamela 4 installation (see [`docs/data_
    ```
 
 ### 2. Running the Backend
-Set an AI API key in user secrets or environment variables for AI narrator summaries and Ilal explanations. Together AI (default model `zai-org/GLM-5.3-Flash`) takes precedence; Google Gemini is the fallback:
+The AI key is optional: without it the app runs fully (search, trees, takhreej, Ilal findings) and only the AI narrator summaries and Ilal explanations are unavailable. To enable them, set an AI API key in user secrets or environment variables. Together AI (default model `zai-org/GLM-5.3-Flash`) takes precedence; Google Gemini is the fallback:
 ```powershell
 dotnet user-secrets set "Together:ApiKey" "YOUR_TOGETHER_KEY" --project src/SmartHadithTree.Api
 # or: dotnet user-secrets set "Gemini:ApiKey" "YOUR_API_KEY" --project src/SmartHadithTree.Api
@@ -76,6 +78,8 @@ npm install
 npm run dev
 ```
 The frontend will run on `http://localhost:3000`.
+
+To start the API and the frontend together, run `scripts/run.ps1` from the repository root.
 
 ## Core Features
 - **Visual Isnad Trees & Comparative Takhreej**: Dynamically renders single-hadith and multi-hadith comparative transmission graphs (`ELK.js` + `React Flow`) highlighting the common Madar (pivot narrator) across 31 collections.

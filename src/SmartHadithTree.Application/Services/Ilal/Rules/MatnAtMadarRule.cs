@@ -24,8 +24,17 @@ public sealed class MatnAtMadarRule : IIlalRule
     /// </summary>
     public const int MinSubstitutedWords = 2;
 
+    /// <summary>
+    /// A text with at most this many content words, wholly contained in a longer one, is an abridgement
+    /// (a compiler quoting only the opening saying), not an omission by the narrator. A full narration of
+    /// its own is longer (the shortest one compared in the tests has four).
+    /// </summary>
+    public const int MaxFragmentWords = 3;
+
     /// <summary>How a compared text differs from a reference text.</summary>
     public enum DiffKind { None, Unrelated, Addition, Omission, Contradiction }
+
+    private enum Fragment { None, Reference, Compared }
 
     private sealed class TextCluster
     {
@@ -33,6 +42,14 @@ public sealed class MatnAtMadarRule : IIlalRule
         public required string[] Tokens { get; init; }
         public List<IsnadBranch> Branches { get; } = [];
         public int BestTier => Branches.Min(b => b.StudentTier);
+
+        /// <summary>
+        /// Every student is graded and the best of them is weak (rank 6 or below). A student without a grade
+        /// is «غير محرر», no verdict, so a side that has one is not called weak.
+        /// </summary>
+        public bool KnownWeak => Branches.All(b => b.StudentRanked) && BestTier >= 6;
+
+        public bool HasUnranked => Branches.Any(b => !b.StudentRanked);
     }
 
     public IEnumerable<IlalFindingDto> Evaluate(IlalContext context)
@@ -47,12 +64,21 @@ public sealed class MatnAtMadarRule : IIlalRule
     private static IEnumerable<IlalFindingDto> EvaluateSplit(IlalContext context, SplitPoint split)
     {
         // 1. Group branches whose texts agree (only minor wording differences) into clusters.
+        var candidates = split.Branches
+            .Select(b => (Branch: b, Tokens: MatnText.Tokenize(MatnText.ExtractBody(b.Chains[0].MatnArabic))))
+            .Where(c => c.Tokens.Length > 0)
+            .ToList();
+
+        // An abridged text says nothing about the part it leaves out, so it is not evidence for any cluster.
+        var kept = candidates
+            .Where(c => !candidates.Any(o => o.Branch != c.Branch
+                && FindFragment(MatnAligner.Align(o.Tokens, c.Tokens)) == Fragment.Compared))
+            .ToList();
+
         var clusters = new List<TextCluster>();
-        foreach (var branch in split.Branches)
+        foreach (var (branch, tokens) in kept)
         {
             var rep = branch.Chains[0];
-            var tokens = MatnText.Tokenize(MatnText.ExtractBody(rep.MatnArabic));
-            if (tokens.Length == 0) continue;
 
             var home = clusters.FirstOrDefault(c => Classify(MatnAligner.Align(c.Tokens, tokens)) == DiffKind.None);
             if (home == null)
@@ -86,7 +112,25 @@ public sealed class MatnAtMadarRule : IIlalRule
                     continue;
                 }
 
-                var weak = other.BestTier >= 6;
+                var weak = other.KnownWeak;
+                if (!weak && other.HasUnranked)
+                {
+                    yield return new IlalFindingDto
+                    {
+                        Type = IllahType.Shudhudh,
+                        Severity = IllahSeverity.Tanbih,
+                        TitleAr = "مخالفة في المتن، وراويها غير محرر",
+                        EvidenceAr =
+                            $"اختلف الرواة عن {madarName} في لفظ المتن: رواه {Describe(context, other)} بلفظ يخالف رواية {Describe(context, main)}، "
+                            + "ولم يُحرَّر حال راويها في الكتب المعتمدة، فلا يُحكم على روايته بالنكارة ولا بالشذوذ حتى يُنظر في حاله.",
+                        NarratorIds = [split.MadarId, .. other.Branches.Select(b => b.StudentId)],
+                        HadithIds = other.Branches.SelectMany(b => b.Chains).Select(c => c.HadithId).Distinct().ToList(),
+                        Confidence = 0.35,
+                        MatnComparison = comparison
+                    };
+                    continue;
+                }
+
                 yield return new IlalFindingDto
                 {
                     Type = weak ? IllahType.Nakarah : IllahType.Shudhudh,
@@ -112,7 +156,7 @@ public sealed class MatnAtMadarRule : IIlalRule
             var baseEvidence =
                 $"زاد {Describe(context, adder)} عن {madarName} في المتن: «{addedText}»، ولم يذكرها {Describe(context, omitter)}.";
 
-            if (adder.BestTier >= 6)
+            if (adder.KnownWeak)
             {
                 yield return Addition(IllahType.Nakarah, IllahSeverity.Qadihah, "زيادة منكرة",
                     $"{baseEvidence} وراوي الزيادة ضعيف فلا تقبل زيادته.", 0.6);
@@ -124,12 +168,14 @@ public sealed class MatnAtMadarRule : IIlalRule
             }
             else
             {
-                var trusted = adder.BestTier <= 4;
+                var trusted = adder.BestTier <= 4 && !adder.HasUnranked;
                 yield return Addition(IllahType.Ziyadah, trusted ? IllahSeverity.GhayrQadihah : IllahSeverity.Tanbih,
                     trusted ? "زيادة ثقة" : "زيادة تحتاج إلى نظر",
                     trusted
                         ? $"{baseEvidence} وراويها ثقة لم يخالف من هو أرجح منه، فهي زيادة ثقة مقبولة."
-                        : $"{baseEvidence} وراويها دون الثقة، فيُنظر في قبولها.",
+                        : adder.HasUnranked
+                            ? $"{baseEvidence} وراويها غير محرر الحال في الكتب المعتمدة، فيُنظر في قبولها."
+                            : $"{baseEvidence} وراويها دون الثقة، فيُنظر في قبولها.",
                     trusted ? 0.6 : 0.45);
             }
 
@@ -171,7 +217,7 @@ public sealed class MatnAtMadarRule : IIlalRule
 
     private static readonly HashSet<string> FramingTokens = new(StringComparer.Ordinal)
     {
-        "ان", "انه", "انها", "قال", "فقال", "النبي", "رسول", "الله", "نبي",
+        "ان", "انه", "انها", "قال", "فقال", "يقول", "النبي", "رسول", "الله", "نبي",
         // Narrative preface that only sets the scene («كنت مع رسول الله في بعض أسفاره وكان …»); a text
         // that opens with it and one that does not are the same hadith, not an addition.
         "كنت", "مع", "في", "بعض", "اسفاره", "كان", "وكان"
@@ -181,6 +227,7 @@ public sealed class MatnAtMadarRule : IIlalRule
     public static DiffKind Classify(AlignmentResult diff)
     {
         if (!AreRelated(diff)) return DiffKind.Unrelated;
+        if (FindFragment(diff) != Fragment.None) return DiffKind.None;
 
         var addedTokens = diff.Segments
             .Where(s => s.Kind == AlignmentKind.Added)
@@ -203,20 +250,30 @@ public sealed class MatnAtMadarRule : IIlalRule
         var addedOnly = Math.Max(0, addedTokens.Count - substituted - transposedCount);
         var removedOnly = Math.Max(0, removedTokens.Count - substituted - transposedCount);
 
-        // Multi-word contiguous substitution at a single site is a direct contradiction
-        if (maxSingleSubstitution >= MinSubstitutedWords && diff.Similarity < 0.9) return DiffKind.Contradiction;
-        if (addedOnly >= MinSignificantWords && removedOnly >= MinSignificantWords) return DiffKind.Contradiction;
+        if (addedOnly >= MinSignificantWords && removedOnly >= MinSignificantWords
+            && LongestExcessRun(diff, AlignmentKind.Added) >= MinSignificantWords
+            && LongestExcessRun(diff, AlignmentKind.Removed) >= MinSignificantWords)
+        {
+            return DiffKind.Contradiction;
+        }
+        // An addition or an omission is one stretch of text, not scattered words: a repeated phrase that the
+        // alignment pairs with the wrong occurrence, or many small wording changes, add up to words but not to a stretch.
         if ((addedOnly >= MinSignificantWords || (addedTokens.Count - transposedCount >= MinSignificantWords && maxSingleSubstitution < MinSubstitutedWords))
-            && diff.LongestAddedRun >= 2 && removedOnly < MinSignificantWords)
+            && LongestExcessRun(diff, AlignmentKind.Added) >= MinSignificantWords && removedOnly < MinSignificantWords)
         {
             return DiffKind.Addition;
         }
         if ((removedOnly >= MinSignificantWords || (removedTokens.Count - transposedCount >= MinSignificantWords && maxSingleSubstitution < MinSubstitutedWords))
-            && LongestRemovedRun(diff) >= 2 && addedOnly < MinSignificantWords)
+            && LongestExcessRun(diff, AlignmentKind.Removed) >= MinSignificantWords && addedOnly < MinSignificantWords)
         {
             return DiffKind.Omission;
         }
-        if (substituted >= MinSubstitutedWords && diff.Similarity < 0.9) return DiffKind.Contradiction;
+        // Multi-word contiguous substitution at a single site is a direct contradiction. It comes after the
+        // addition and omission checks: a text that lacks a whole stretch is an omission even when two adjacent
+        // words elsewhere differ (a synonym next to a misprint).
+        if (maxSingleSubstitution >= MinSubstitutedWords && diff.Similarity < 0.9) return DiffKind.Contradiction;
+        // Single words swapped here and there (خشبه / خشبته, ضرار / إضرار) are narration by meaning or spelling,
+        // the same as one swapped word, which is not flagged either; only a multi-word site (above) is.
         return DiffKind.None;
     }
 
@@ -236,6 +293,23 @@ public sealed class MatnAtMadarRule : IIlalRule
         var shorter = Math.Min(reference, compared);
 
         return shorter >= MinSignificantWords && (double)shared / shorter >= MinRelatedSimilarity;
+    }
+
+    /// <summary>
+    /// Which side, if any, is only an abridgement of the other: it has no content word of its own and
+    /// at most <see cref="MaxFragmentWords"/> in all.
+    /// </summary>
+    private static Fragment FindFragment(AlignmentResult diff)
+    {
+        var shared = diff.Segments.Where(s => s.Kind == AlignmentKind.Equal).Sum(s => s.Tokens.Count(IsContentWord));
+        if (shared == 0 || shared > MaxFragmentWords) return Fragment.None;
+
+        var referenceOwn = diff.Segments.Where(s => s.Kind == AlignmentKind.Removed).Sum(s => s.Tokens.Count(IsContentWord));
+        var comparedOwn = diff.Segments.Where(s => s.Kind == AlignmentKind.Added).Sum(s => s.Tokens.Count(IsContentWord));
+
+        if (referenceOwn == 0 && comparedOwn > 0) return Fragment.Reference;
+        if (comparedOwn == 0 && referenceOwn > 0) return Fragment.Compared;
+        return Fragment.None;
     }
 
     /// <summary>
@@ -260,8 +334,31 @@ public sealed class MatnAtMadarRule : IIlalRule
 
     private static bool IsContentWord(string token) => !FramingTokens.Contains(token);
 
-    private static int LongestRemovedRun(AlignmentResult diff) =>
-        diff.Segments.Where(s => s.Kind == AlignmentKind.Removed).Select(s => s.Tokens.Count).DefaultIfEmpty(0).Max();
+    /// <summary>
+    /// The longest run of content words only one side has, beyond what the run next to it (the other side's words
+    /// at the same place) replaces. A run that has two words or more opposite it is a substitution and counts as none.
+    /// </summary>
+    private static int LongestExcessRun(AlignmentResult diff, AlignmentKind kind)
+    {
+        var best = 0;
+        for (var i = 0; i < diff.Segments.Count; i++)
+        {
+            var segment = diff.Segments[i];
+            if (segment.Kind != kind) continue;
+
+            var paired = 0;
+            if (i > 0 && diff.Segments[i - 1].Kind is not (AlignmentKind.Equal) && diff.Segments[i - 1].Kind != kind)
+                paired = Math.Max(paired, diff.Segments[i - 1].Tokens.Count(IsContentWord));
+            if (i + 1 < diff.Segments.Count && diff.Segments[i + 1].Kind is not (AlignmentKind.Equal) && diff.Segments[i + 1].Kind != kind)
+                paired = Math.Max(paired, diff.Segments[i + 1].Tokens.Count(IsContentWord));
+
+            // Several words swapped for several others is a substitution (a contradiction, decided by its site);
+            // only a run with little or nothing opposite it is text one side has and the other lacks.
+            if (paired >= MinSubstitutedWords) continue;
+            best = Math.Max(best, segment.Tokens.Count(IsContentWord) - paired);
+        }
+        return best;
+    }
 
     private static string Describe(IlalContext context, TextCluster cluster) =>
         string.Join(" و", cluster.Branches.Select(b =>

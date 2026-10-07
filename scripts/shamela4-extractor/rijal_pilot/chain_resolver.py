@@ -62,7 +62,8 @@ DEFAULT_FOR = {
 }
 default_of = {}
 for _name, _prefix in DEFAULT_FOR.items():
-    _hit = [j for j, e in enumerate(entries) if e['header'].startswith(_prefix)]
+    # A fallback entry (Lisan, Siyar) never counts: «جابر بن عبد الله بن عمرو بن حرام» also heads the Siyar's entry for him.
+    _hit = [j for j, e in enumerate(entries) if e['header'].startswith(_prefix) and not e.get('fallback')]
     if len(_hit) == 1:
         default_of[_name] = _hit[0]
 

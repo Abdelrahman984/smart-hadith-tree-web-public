@@ -58,7 +58,7 @@ const ReferenceNode = ({ data, selected }: { data: ReferenceNodeData; selected?:
               style={{ backgroundColor: `${meta.color}20`, color: meta.color }}
             >
               <Bookmark className="w-3 h-3 inline" />
-              <span>رقم {data.hadithNumber}</span>
+              <span title={String(data.hadithNumber)}>{String(data.hadithNumber).includes(",") ? "أرقام" : "رقم"} {data.hadithNumber}</span>
             </span>
           )}
         </div>
@@ -69,31 +69,14 @@ const ReferenceNode = ({ data, selected }: { data: ReferenceNodeData; selected?:
         {data.bookName}
       </div>
 
-      {/* Famous Reference Owner Name (e.g. البخاري) */}
+      {/* The compiler the book is known by (e.g. البخاري) */}
       <div
         className="font-extrabold text-slate-900 text-xl tracking-wide font-arabic my-0.5"
-        title={data.fullName || data.famousName}
+        title={data.bookName}
       >
         {data.famousName}
       </div>
 
-      {/* Historical Two-Part Name Subtitle (e.g. محمد بن إسماعيل) */}
-      <div className="text-xs text-ink-subtle font-arabic truncate" title={data.fullName}>
-        ({data.twoPartName || data.fullName || data.famousName})
-      </div>
-
-      {data.generationTier && (
-        <div className="text-[11px] text-ink-subtle mt-1.5 pt-1 border-t border-line/50">
-          {data.generationTier}
-        </div>
-      )}
-
-      {/* Bottom Handle - Output to Student when a compiler is also an intermediate sheikh in a later collection */}
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!w-2 !h-2 !bg-transparent !border-none opacity-0 pointer-events-none"
-      />
     </div>
   );
 };

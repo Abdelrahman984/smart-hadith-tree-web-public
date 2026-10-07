@@ -22,6 +22,12 @@ public class IsnadNodeDto
     public Guid NarratorId { get; set; }
     public string NarratorName { get; set; } = string.Empty;
     public string? KnownAs { get; set; }
+
+    /// <summary>
+    /// The form of the narrator's name that the chosen hadiths' isnads use most often (e.g. "ابن عيينة" for a narrator
+    /// registered under his full name). Null when none of them names him, e.g. the compiler.
+    /// </summary>
+    public string? MentionedName { get; set; }
     public string? GenerationTier { get; set; }
     public int StepOrder { get; set; } // 1 = Compiler (Bukhari), higher = earlier (Sahabi)
     public Guid? ParentNodeId { get; set; } // Points to the student (who received it from this sheikh)

@@ -53,6 +53,7 @@ public class HadithChainRepository(HadithTreeDbContext context) : IHadithChainRe
                 rc.NarratorId,
                 n.FullName AS NarratorName,
                 n.KnownAs,
+                CAST(NULL AS NVARCHAR(MAX)) AS MentionedName,
                 n.GenerationTier,
                 rc.StepOrder,
                 rc.ParentNodeId,

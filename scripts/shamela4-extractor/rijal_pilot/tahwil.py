@@ -33,7 +33,7 @@ PROPHET = re.compile(r'رسول الله|النبي|ﷺ|صلى الله عليه
 
 
 def _clean(text: str) -> str:
-    return re.sub(_INVISIBLE, '', HARAKAT_RE.sub('', text))
+    return normalize_verbs(re.sub(_INVISIBLE, '', HARAKAT_RE.sub('', text)))
 
 
 def _isnad_end(text: str) -> int:

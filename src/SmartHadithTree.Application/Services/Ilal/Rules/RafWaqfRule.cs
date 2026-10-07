@@ -41,6 +41,13 @@ public sealed class RafWaqfRule : IIlalRule
                     "والطرفان متقاربان، فيحتاج إلى نظر في القرائن.", marfu.Concat(mawquf).ToList(), 0.4)
             };
 
+            if (severity == IllahSeverity.Qadihah && IsnadBranching.AllUnranked(flagged))
+            {
+                severity = IllahSeverity.Tanbih;
+                confidence = 0.35;
+                conclusion += " لكن لم يُحرَّر حال رواة هذا الطرف في الكتب المعتمدة، فلا يُجزم بترجيح الطرف الآخر.";
+            }
+
             yield return new IlalFindingDto
             {
                 Type = IllahType.RafWaqf,

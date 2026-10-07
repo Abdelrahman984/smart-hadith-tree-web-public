@@ -1,5 +1,110 @@
 # Changelog
 
+## 2026-10-07: Getting started points at the v7 backup
+
+- **Problem**: the README downloaded and restored the v5 backup into `SmartHadithTree_ShamelaV5`, while the Api and Etl connect to `SmartHadithTree_ShamelaV7`. Someone following it literally got an empty database.
+- **Fix**: README, `deploy/deployment.md` and `backups/README.md` now give the v7 Drive link, file name and restore command; `docker-compose.yml` connects to `SmartHadithTree_ShamelaV7` too (`docker-compose.prod.yml` is unchanged and still uses `SmartHadithTree`). The README also states that the AI key is optional, that Windows + a local SQL Server are needed, that the test project needs the .NET 10 SDK, and links the live demo.
+- **Not checked**: the Docker restore with the v7 backup (the logical file names in the `MOVE` clause are assumed; confirm with `RESTORE FILELISTONLY`), and the Drive link from a signed-out browser.
+
+---
+
+## 2026-10-07: React warning «Cannot update a component while rendering» on the workspace (frontend)
+
+- **Bug**: `HadithWorkspace` called `useWorkspaceStore.getState().init(...)` while rendering, which sets the store while other components (the workspace of the page being left) are subscribed to it. React logged «Cannot update a component (`HadithWorkspace`) while rendering a different component». Not related to the narrator names.
+- **Fix** (`HadithWorkspace.tsx`): the defaults are set in a `useLayoutEffect` on mount, so they are still in place before the first paint (the panel does not slide open) and no longer during render. Type check and lint are clean; **not run in a browser** (no Api or database in the build environment): open `/takhreej` and `/tree/<id>` once and check the console and that the panel starts open on a wide screen.
+
+## 2026-10-07: Narrators are named as the chosen matns name them
+
+- **Nisbah added**: after the form is chosen, the narrator's own nisbah (any «ال…» word of his full name, also after «ويقال») is appended when an isnad writes it right after the name: «علقمة بن وقاص الليثي», «محمد بن إبراهيم التيمي», «يحيى بن سعيد الأنصاري». The nisbah also separates the two Yahya ibn Sa'id cards, so the frontend no longer swaps them for the three-part name («… بن قيس»).
+
+- **Also fixed**: the single-tree query (`HadithChainRepository.GetIsnadTreeAsync`) is raw SQL and did not select the new `MentionedName` column, which would have broken `/api/Tree/<id>` (the unit tests do not run that query). It now selects `NULL AS MentionedName`; the single-hadith tree gets its mentioned name in `HadithSearchService`. **Not run against a real database**: check `/api/Tree/<id>` once.
+
+- **Problem**: the tree showed the registry name (a long full name, or a name the books rarely use) while the isnads of the chosen hadiths write him as «سفيان» or «ابن عيينة».
+- **Fix** (`NarratorMentionedName.cs`, `HadithSearchService`, `buildIsnadGraph.ts`): for each narrator the API builds candidate forms of his name (first name, first name + father, + grandfather, «ابن X», the nisbah, each `KnownAs` part), counts them in the isnad texts (`FullIsnadText`) of the hadiths he appears in, and returns the most frequent one as `mentionedName` (ties go to the longer form). A bare first name followed by «بن» counts for the longer name, so «محمد بن يحيى» is not read as «محمد». Diacritics, alef/ya/ta marbuta variants and «أبي/أبا» are ignored when matching. The cards use `mentionedName`, and fall back to the old formatting when no isnad names him (e.g. the compiler). Two cards that end with the same name are still told apart by the longer name. The narrator's `Kunyah` is also a candidate, and «عبد الله» / «عبدالله» match each other.
+- **Found on real data** (takhreej of «إنما الأعمال بالنيات», 8 hadiths): shared forms gave wrong names, e.g. «أبو بكر» for al-Bayhaqi, al-Humaydi and three others, «أبو عبد الله» for محمد بن يعقوب, «محمد» for ابن يحيى القطان. Now (1) a form that two narrators of the same tree share is never used (`FormKeys`), and (2) a form without «بن» followed by «بن» in the text no longer counts («أبو بكر بن أبي شيبة» is not «أبو بكر»). Such narrators fall back to the old formatting, and two cards with the same name are told apart as before.
+- **Second round on the same data**: a form shared by narrators of one tree now goes to the narrator whose isnads use it clearly most (الأنصاري gets «يحيى بن سعيد», ابن عيينة gets «سفيان», الثوري gets «الثوري»); nobody gets it on a tie. The leading «ال» («الليث») and a joined «و» («وسفيان») no longer stop a match. A form right after «بن» or «أبو» is part of a nasab or kunyah, not a mention («أبو عبد الله» did not name al-Humaydi «عبد الله»).
+
+---
+
+## 2026-10-07: A compiler is not drawn twice (frontend)
+
+- **Bug**: when the first narrator of a chain was the compiler himself (أحمد بن الحسين for al-Bayhaqi, محمد بن يزيد for Ibn Majah), his narrator card sat right above the source card of his own book, the same person twice. Most source cards had it.
+- **Fix** (`buildIsnadGraph.ts`, `bookCompilers.ts`): the compiler of each book is known from the resolver's `compiler` of the book's chains (`bookCompilers.ts`, the start of the registry name). A first narrator who is the compiler of every book he starts a chain in gets no narrator card: the source card stands in his place and his students link to it. A first narrator who is only the compiler's sheikh keeps his card, and the compiler as an intermediate sheikh in another book keeps his card there.
+
+---
+
+## 2026-10-07: Verbs with a final alef maqsura (resolver) and the V7 database
+
+- **Bug**: al-Bayhaqi's edition writes «أخبرنى / حدثنى / أنبأنى» with ى; `VERBS` and the tahwil patterns knew only the ya forms, so «حدثنا يحيى بن سعيد، أخبرنى محمد بن إبراهيم التيمي» stayed one segment and Muhammad ibn Ibrahim was lost: the tree drew Yahya ibn Sa'id hearing straight from Alqama (Sunan al-Kubra 15101). `normalize_verbs` (`gap_test.py`, used by `chain_segments_verbs` and `tahwil._clean`) turns these verbs into the ya forms before matching. The same text also polluted names («أخبرنى عمى عمارة», «حدثنى أبى», «وحدثنى على»).
+- **Measured** on all 274,597 chains, before and after: 3,549 records change, 3,512 of them in Sunan al-Kubra (+3,081 names, +4,533 resolved, 2,014 records longer); the other 30 books change by 1 to 14 records. 57 records get shorter, because a name gained at the front pushes the tail past the 8-name cap of a single chain (found in 4 of 10 sampled; the cap is old, see `docs/backlog.md`). A random sample of 10 changed records read by hand: 9 clearly better, 1 unchanged.
+- **Database `SmartHadithTree_ShamelaV7`** built from the new chains (registry unchanged, so no pipeline run): 1,266,022 transmissions (v6: 1,262,178), narrators, hadiths and Ilal data as in v6. Backup `backups/SmartHadithTree_Shamela_v7_2026-10-07.bak` (verified). The nine Ilal pages: findings 121 -> 119, matn 47 -> 46, Qadihah 10 -> 9, every grade unchanged (`docs/challenge/evaluation/ilal-pages-v7-2026-10-07.json`); the niyyat page 11 -> 9 findings, Qadihah 1 -> 0. The Api and Etl `appsettings.json` now point at V7. Every hadith Guid differs from v6, so saved `/takhreej?ids=` and `/tree/<id>` links of v6 do not work.
+
+---
+
+## 2026-10-07: Source card split from the first narrator (frontend)
+
+- **Bug**: the card of a chain's first narrator was drawn as «المصدر والمُخَرِّج» and named after a lookup on his full name, so Yahya ibn Sa'id al-Ansari showed as «مالك بن أنس» («... بن مالك بن النجار» matched «مالك») and Ahmad ibn Ishaq as «أحمد بن حنبل». Sufyan ibn Uyaynah showed as «البخاري».
+- **Fix** (`buildIsnadGraph.ts`, `formatFamousReferenceName.ts`): the first narrator is an ordinary narrator card. The book gets its own source card (book, number, compiler named from the title alone, «للطبراني» expanded to «ل الطبراني» so it matches) below him; in the comparative tree one card per book, listing the numbers of its hadiths and linked to every first narrator of their chains (al-Bayhaqi's three hadiths are one card, «أرقام 184, 2287, 15101»). Source cards open no narrator details and are left out of the narrator find box.
+- **Same short name, different people**: two narrators with different ids but the same two-part name (Yahya ibn Sa'id al-Ansari and al-Qattan) looked like one card drawn twice. Such cards now show the name down to the grandfather («يحيى بن سعيد بن قيس» / «... بن فروخ»); unique names stay short.
+- Tests: `graphBuilders.spec.ts` updated; `graphPages.spec.ts` counts updated; the whole suite passes against the mock API.
+
+---
+
+## 2026-10-06: Siyar as a second fallback registry; the fallback made complete (resolver, applies at the next rebuild)
+
+- **`parse_siyar.py`** writes `extra_siyar.json` from the dumped Siyar (5,772 entries, shaykh and student lists, headers from the table-of-contents titles), marked `fallback`.
+- **Fallback fixes** (`link_tahdhib.py`, `chain_resolver.py`, `gap_test.py`): the name indexes are split before the Taqrib and cross-reference aliases are attached; `DEFAULT_FOR` and the compiler entry ignore fallback entries; fallback entries merge only with each other.
+- **Measured** on all 274,597 chains, the two books on or off, branch by branch: 11,267 names gained, 4,145 gaps closed against 511 opened, 104 names lost, 257 real swaps; undecided names inside chains 89,497 to 83,935 (-6.2%). Bench: 428 gained, 14 lost, agreement unchanged. Details and the earlier failed attempts: `docs/backlog.md` §2.
+
+---
+
+## 2026-10-06: Lisan al-Mizan as a fallback registry; the same-person merge made deterministic (resolver, applies at the next rebuild)
+
+- **Fallback entries** (`link_tahdhib.py`): entries marked `fallback` get their own name indexes, used only when a name matches nobody among the other entries, so their namesakes no longer turn «أنس بن مالك» or «بندار» into ties. `make_extra_lisan.py` writes `extra_lisan.json` from `lisan.json` (9,072 entries, headers cut at the first narrating word).
+- **Measured** on all 274,597 chains (scratch export, V5 chains untouched): 2,477 gaps closed against 787 opened, 6,108 chains gained narrators, 831 lost some; undecided names inside chains 89,497 to 86,486. Bench: 274 names gained against 85 lost, agreement with the current system unchanged. Details and the history of the earlier attempts: `docs/backlog.md` §2.
+- **Fix**: `merge_same_person` gave 611 or 612 merged entries depending on the hash seed, so the cached indexes could disagree with the live ones (`IndexError` in `father_of`). Fixed order; the same count in six seeds.
+
+---
+
+## 2026-10-06: Registry, same narrator in two books (resolver, applies at the next rebuild)
+
+- **`link_tahdhib.py`**: entries of different books that are one narrator are merged (`merge_same_person`): three generations of the nasab agree (or two, with the same nasab tail or a rare shared nisba), a shared nisba, kunya or the same nasab confirms it, and no nisba, kunya, death date or great-grandfather contradicts. Never two entries of one book or of Tahdhib. 212 entries merged (23,502 to 23,290); the merged narrator keeps the other header's words in the matching indexes; `registry.json` gets `merged_ids`; `link_ilal.py` follows an override id that was merged away. Review with `SHOW_MERGED=<seed>`; `NO_MERGE=1` switches it off.
+- **Measured** on all 274,597 chains (scratch export): 719 gaps closed against 57 opened, 1,344 gained narrators, 48 lost some; undecided names inside chains 90,730 to 89,497. Ilal links unchanged (158 mudallisin, 131 mukhtalitun). Details and the analysis of what the remaining ties are: `docs/backlog.md` §1.
+
+---
+
+## 2026-10-06: Isnad segmenter (resolver, applies at the next rebuild)
+
+- **`gap_test.py`**: brackets and parentheses in the isnad are dropped with their content kept (an editor's restored narrator); «يحدث» and «قرئ على / قرأت على / كنت أسمع» are verbs; «ز-» is dropped; «النبى» / «نبي الله» end the isnad; «أنه / أنها» at the end of a segment and «بلغه / بلغني» are not part of a name, and «بلغه أن…» ends the isnad.
+- **Measured** on all 274,597 chains (scratch export): 18,002 changed, 4,701 gaps closed against 943 opened, 11,327 gained narrators, 413 lost some; undecided names inside chains 95,652 to 90,730. Ibn Abi Shayba 37 now resolves «زيد» to Zayd ibn Sallam (was Zayd ibn Nu'aym). Details and what is not fixed: `docs/backlog.md` §1.
+- **Tools**: `rijal_pilot/segment_checks.py` (14 fast checks of the segmenter, no registry) and `rijal_pilot/chain_report.py` (where the resolved chains break). Nothing is loaded into a database yet.
+
+---
+
+## 2026-10-06: Ilal matn comparison, fewer false findings (backlog §3 and §4)
+
+- **Abridged texts are not omissions** (`MatnAtMadarRule`): a text with no content word of its own and at most 3 in all (`MaxFragmentWords`) that sits wholly inside a longer one is an abridgement, not an addition or omission. `Classify` returns `None` for it, and the rule leaves it out of the clusters so it counts as support for no version. «يقول» is now a framing word. `MatnVariation` (variant highlighting on the comparative page) calls `Classify`, so a fragment is no longer shown as a variant there.
+- **Notes and noise are cut from the matn before comparing** (`MatnText.ExtractBody`, no rebuild needed): `[...]` spans (editor notes, page markers); «رواه / أخرجه / لم يرو / تفرد به / حكم حسين / هذا الحديث»; pointers («فذكر مثله», «وذكر الحديث», «بمثل حديث»); the printed edition's symbols; and a second isnad pasted into the record (only once the matn start is known, and not «حدثنا رسول الله»). The TypeScript port `frontend/src/features/isnad-tree/utils/matnDiff.ts` is kept in step.
+- **Scattered one-word swaps are not a contradiction** (`Classify`): the old rule counted two scattered single-word swaps (خشبه / خشبته) as a contradiction while ignoring one; only a multi-word site counts now.
+- **Measured** on 9 pages (4 reviewed, 5 not tuned on), live API, before and after: matn findings 83 to 68, of which «قادحة» 42 to 33. Tahur 11 to 4 (3 «قادحة»), Halal 16 to 10 «قادحة», Jannah 3 to 1. Nasiha rose from 18 to 21 matn findings (11 «قادحة» before and after): more Ziyadah (5 to 7) now that abridgements no longer hide them. What is left is mostly real wording and length differences between versions, an unranked narrator counted weak (backlog §3) and one-off commentary the cleanup does not know.
+- **Tests**: 243 backend (`AbridgedMatnTests`, `MatnCleanupTests`), 10 in `tests/matnDiff.spec.ts`.
+- **A narrator with no grade is not weak** (`MatnAtMadarRule`, backlog §3 cause 3): `IlalNarrator.IsRanked` / `NarratorGradeScale.IsRanked` tell a verdict (Ibn Hajar's rank or a recognized legacy grade) from the placeholder tier 7. Only a side whose students are all graded and weak is «منكرة»; an unranked contradicting student gives a «تنبيه» («مخالفة في المتن، وراويها غير محرر», confidence 0.35, shown in the panel), and an unranked adder gives «زيادة تحتاج إلى نظر» worded «غير محرر», not «دون الثقة». Branch strength (`Compare`) still uses the placeholder tier, and RafWaqf and WaslIrsal still weigh an unranked student as tier 7.
+- **Measured again** on the same 9 pages: Nakarah 13 to 0 (all 13 were unranked narrators), matn «قادحة» 33 to 20 (baseline 42 before this work). Ranked weak narrators are still «منكرة» (test). The real fix for the missing grades is data (backlog §2: the Siyar and Thiqat books, the critics' quotes).
+- **Tests**: 251 backend.
+
+### Same day, second batch: the code-only items of the backlog (no database change)
+
+- **Marfu** (`MatnText.IsMarfu`): «سمعت رسول ﷺ» (a printed edition without «الله») is marfu: the honorific after «رسول» says whom it means. «رسول كسرى» is not.
+- **Additions and omissions are a stretch, not scattered words** (`MatnAtMadarRule.Classify`): an addition, omission or two-sided contradiction needs one run of 3 or more content words with little or nothing opposite it (`LongestExcessRun`). A repeated phrase that the alignment pairs with the wrong occurrence, or many small wording changes, no longer add up to a «زيادة». A run with 2 words or more opposite it is a substitution and is decided by its site, after the addition and omission checks (so a real omission is not turned into a contradiction by two adjacent swapped words). «لفظ حديثهما» joins the commentary that is cut.
+- **A side weighed only on a placeholder tier is not «قادحة»** (`RafWaqfRule`, `WaslIrsalRule`, `IsnadBranching.AllUnranked`): when every student of the weaker side has no grade the finding is a «تنبيه» and says so.
+- **Shawahid are kept out of the comparison, by the server** (`Shawahid`, `IlalContext.WithChains`): a narration that reaches a graded Companion other than the one most narrations reach is a witness. The rules and the madars see the routes only; `IlalTariqDto` carries `CompanionId`, `CompanionName` and `IsShahid`, and the summary says how many were set apart. A chain that merely stops short of a Companion stays a route (the frontend-only version of this called such a chain a shahid). Witnesses still count for the grade. `groupSources.ts` uses the server's split and falls back to reading the chains' tops when the API does not send it.
+- **Missing teacher-student links of ungraded narrators are «بيانات ناقصة»** (`HiddenInqitaRule`): when either narrator has no grade (a late narrator outside the biographical books) the finding is titled «لم يثبت اللقاء (بيانات ناقصة)» with confidence 0.2, so the panel folds it away. On the 9 pages, 40 of 69 such findings involved an ungraded narrator.
+- **An ungraded narrator is not a weak link in the grade** (`IlalAnalysisService`, `TaqwiyahService`): `WeakestTier` counts graded narrators only and `UnratedNarratorCount` says how many were left out. A route through an ungraded narrator is judged only when its graded narrators already make it weak; otherwise it is left out. A hadith none of whose judged routes is sound, with routes left out, is «غير محرر», not «ضعيف».
+- **Checked, no change needed**: the canvas edge styling already follows the panel's low-confidence toggle; the 0.3 threshold sits between the two clusters of Tanbih confidences (0.2 and 0.25 for data gaps, 0.35 and above for the rest) on the 9 pages. Tabarani 7050 («وبه») is stored correctly (Yahya, Muhammad ibn Ibrahim, Alqama, Umar); the false «شذوذ» that named it comes from Bayhaqi 15101, whose chain drops Muhammad ibn Ibrahim (a resolver item, backlog §1).
+- **`scripts/eval_ilal_pages.py`**: the nine-page measurement as a script (`--save`, `--compare`), to be run again after the database rebuild.
+- **Measured** (the 9 pages, against the last commit): findings 176 to 127, matn «قادحة» 33 to 11 (42 before this work), grades unchanged on all nine. 271 backend tests, 133 frontend tests.
+
+---
 ## 2026-10-05: Production deploy and CI/CD
 
 - Live at https://smart-hadith.idealisticsolutions.com (one hostname: `/api/*` goes to the API), behind the host's shared edge Caddy. Database restored from `SmartHadithTree_Shamela_v5_2026-10-05.bak` as `SmartHadithTree`.
@@ -278,3 +383,31 @@ Expanded the repository from 4 collections to the complete 18 Sunni Hadith colle
 - **Ilal**: mudallisin from Ibn Hajar's tiers (158) and mukhtalitun with the books' severity and hearings (131); `IkhtilatRule` weighs severity; grades come from Ibn Hajar's ranks.
 - **Phase 6**: on 4,650 paired hadiths the Ilal engine finds tadlis in 793 (275 before) and ikhtilat in 341 (0 before); 74% position agreement on 220,603 paired chains, with the Shamela side right in 9 of 20 sampled disagreements.
 - **Phase 7**: removed `ItqanDatasetParser`, `ContextualDisambiguator`, `ShamelaSqliteParser`, `IlalSeedService`, `ChainReprocessingService`, the old seeds, their tests and `data/itqan/rijal`. The Api and Etl connection strings point at `SmartHadithTree_Shamela`. Backups: v3 (the old database, before the switch) and v4 (the Shamela database).
+
+## Resolver: «الثقات» لابن قطلوبغا as a third fallback (not yet loaded)
+- `parse_thiqat.py` (Shamela 96165) writes `extra_thiqat.json` (10,117 entries, fallback). `link_tahdhib.py` keeps a Thiqat entry only when Lisan and Siyar have no narrator with the same first three names (the first try turned 929 names they had decided into ties).
+- Measured branch by branch on 306,874 branches against the Lisan+Siyar export: 4,145 names gained, 1,013 lost, 388 swapped (mostly fallback to fallback), gaps closed 1,584 / opened 981. A thin net gain (gaps 99,344 -> 98,892); the swaps and the opened gaps are not hand-read yet.
+
+## Resolver: a late narrator listed twice with his nasab cut short is one narrator
+- `merge_same_person` (link_tahdhib.py) has a pair pass: two-unit names («أحمد بن سلمة») that begin exactly two entries of the whole registry, neither Tahdhib's, are merged unless a nisba, kunya or death date differs or a header only points elsewhere («هو فلان», «في ترجمة», «شيخ», «والد»). Sources may be shared here (the late books list one man under several headings). `SHOW_PAIRS=1` prints the pairs.
+- Tried and not kept: «أبيه/جده» for a son with a long nasab but several candidates (+178 names, 109 unverified swaps, gaps −58); the pair pass for names of three units or more (it made «محمد بن جعفر» = غندر a tie with two late narrators nicknamed غندر: 569 names lost).
+- Measured branch by branch on 306,889 branches against the Thiqat export: 1,960 names gained, 37 lost, gaps closed 1,691 / opened 94 (98,899 -> 97,310). The ~800 id changes are mostly the root of a merged pair (tuhfa:445 -> rijal_hakim:265); a hand read of 45 pairs found about 4 doubtful, all pointer headers, now excluded.
+- The pair pass also requires that the generations both headers name are the same words (`_generations`): «محمد بن هشام بن أبي حرة» is not «محمد بن هشام بن أبي الدميك». Cost: gained 1,960 -> 1,893, lost 37 -> 36, gaps 98,899 -> 97,371. A spelling difference («المساور» / «مساور») now blocks a merge too.
+
+## Database `SmartHadithTree_ShamelaV6` built (2026-10-07)
+- Fresh database from all the resolver work above: 44,282 narrators (was 23,502), 1,262,178 transmissions (was 1,217,978), 165 mudallisin. Backup v6 (`backups/`, verified). The Api and Etl settings still point at V5 until the user checks V6.
+- Isnad gaps over 295,952 comparable branches: 108,066 -> 94,032 (-13%); 27,578 names gained, 694 lost, 3,996 narrators changed. Nine Ilal pages: findings 127 -> 121, matn Qadihah 11 -> 10, grades unchanged.
+- The Api and Etl `appsettings.json` now point at `SmartHadithTree_ShamelaV6`; AGENTS.md, CLAUDE.md, README.md and docs/backlog.md say so. The deploy docs still describe the v5 backup that was deployed.
+
+## How the V6 rebuild was run (for the next one)
+From `data/shamela_rijal`, after the dump step (the three fallback files are generated and git-ignored; `pipeline.py` does not make them and picks up every `extra_*.json`):
+```bash
+python ../../scripts/shamela4-extractor/rijal_pilot/make_extra_lisan.py          # lisan.json -> extra_lisan.json
+python ../../scripts/shamela4-extractor/rijal_pilot/parse_siyar.py               # dump/10906 -> extra_siyar.json
+PYTHONPATH=../../scripts/shamela4-extractor/rijal_pilot python ../../scripts/shamela4-extractor/rijal_pilot/parse_thiqat.py   # dump/96165 -> extra_thiqat.json
+rm -f cache/*.pkl
+python ../../scripts/shamela4-extractor/rijal_pilot/pipeline.py dump .           # registry.json, ilal.json
+python ../../scripts/shamela4-extractor/rijal_pilot/export_chains_shamela.py --books all --workers 4
+```
+Then a fresh database: `ConnectionStrings__DefaultConnection=...Database=SmartHadithTree_ShamelaVn...`, `dotnet ef database update`, the Etl, `seed-ilal-shamela`, a numbered backup, `eval_ilal_pages.py --compare`. The books 10906 (Siyar) and 96165 (Thiqat) must be dumped first with `ShamelaLuceneDumper`.
+Open ideas, none done: a reviewed alias table for lagabs (e.g. «علي بن عمر الحافظ» = al-Daraqutni, «محمد بن عبد الله الحافظ» = al-Hakim); bare names («سفيان», «يحيى», «محمد») need context evidence, not a table; Tarikh al-Islam and Tarikh Dimashq are not downloaded.

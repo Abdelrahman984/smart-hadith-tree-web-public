@@ -24,18 +24,12 @@ export type NarratorNodeData = {
   matnVariationSnippet?: string;
 };
 
-/** Data of the compiler card at the bottom of a chain. */
+/** Data of a source card: a book's hadith, drawn below the first narrator of its chain. */
 export type ReferenceNodeData = {
   famousName: string;
-  fullName?: string;
-  twoPartName?: string;
   bookName: string;
   hadithNumber?: number | string;
-  generationTier?: string | null;
-  gradeSummary?: string;
-  gradeEn?: string;
   sourceBooks?: string[];
-  isSelected?: boolean;
 };
 
 /** Nodes and edges ready for layout, with the books the graph covers (for the legend). */

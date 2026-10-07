@@ -188,3 +188,38 @@ export function formatScholarlyNarratorName(
   return formatTwoPartNarratorName(rawName);
 }
 
+
+const COMPOUND_FIRST_WORDS = ['عبد', 'أبي', 'أبو', 'ابي', 'ابو', 'أم', 'ام'];
+
+/**
+ * The name down to the grandfather ("يحيى بن سعيد بن قيس"), to tell apart two narrators whose short names are the same.
+ * Null when the full name has no grandfather to add.
+ */
+export function formatThreePartNarratorName(rawName: string | null | undefined): string | null {
+  const name = (rawName ?? '')
+    .trim()
+    .split(/\s*[\(\[\{،]|\s+:\s+|\s+ويقال\b/)[0]
+    .trim();
+  const segments = name.split(/\s+(?:بن|ابن|بنت)\s+/).filter(Boolean);
+  if (segments.length < 3) return null;
+
+  const word = (segment: string) => {
+    const words = segment.split(/\s+/);
+    return COMPOUND_FIRST_WORDS.includes(words[0]) && words.length > 1 ? words.slice(0, 2).join(' ') : words[0];
+  };
+  return `${segments[0]} بن ${word(segments[1])} بن ${word(segments[2])}`;
+}
+
+/**
+ * Narrators with different ids but the same short name would be two identical cards. Each of them gets the longer
+ * name, so the cards can be told apart. Cards whose short name is unique keep it.
+ */
+export function disambiguateNarratorNames<T extends { narratorName: string; fullName?: string }>(cards: T[]): void {
+  const byName = new Map<string, T[]>();
+  for (const card of cards) byName.set(card.narratorName, [...(byName.get(card.narratorName) ?? []), card]);
+
+  for (const same of byName.values()) {
+    if (same.length < 2) continue;
+    for (const card of same) card.narratorName = formatThreePartNarratorName(card.fullName) ?? card.narratorName;
+  }
+}

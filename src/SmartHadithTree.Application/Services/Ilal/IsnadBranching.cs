@@ -9,6 +9,8 @@ public sealed class IsnadBranch
     /// <summary>Tier of the student who carries this branch from the madar (lower = stronger).</summary>
     public required int StudentTier { get; init; }
 
+    /// <summary>False when the student has no grade, so <see cref="StudentTier"/> is a placeholder and not a verdict.</summary>
+    public bool StudentRanked { get; init; } = true;
 }
 
 /// <summary>A common link (المدار) at which two or more branches diverge.</summary>
@@ -41,7 +43,8 @@ public static class IsnadBranching
                 {
                     StudentId = g.Key,
                     Chains = g.Select(x => x.Chain).ToList(),
-                    StudentTier = context.TierOf(g.Key)
+                    StudentTier = context.TierOf(g.Key),
+                    StudentRanked = context.IsRanked(g.Key)
                 })
                 .ToList();
 
@@ -66,6 +69,12 @@ public static class IsnadBranching
         if (aCount != bCount) return Math.Sign(aCount - bCount);
         return Math.Sign(tierDiff);
     }
+
+    /// <summary>
+    /// True when none of the branches has a graded student: such a side was weighed on the placeholder tier, so
+    /// calling it the weaker one is no verdict.
+    /// </summary>
+    public static bool AllUnranked(IEnumerable<IsnadBranch> branches) => branches.All(b => !b.StudentRanked);
 
     /// <summary>
     /// Compares two sides of a disagreement, each made of one or more branches.
